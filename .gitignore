@@ -1,7 +1,6 @@
 # Temp and processing files
 .tmp/
 temporary screenshots/
-*.png
 *.mjs
 *.py
 *.bat

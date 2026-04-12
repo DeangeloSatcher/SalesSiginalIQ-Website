@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apex Pipeline Podcast</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+
+  <style>
+    /* ── Reset ── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --purple:        #6A3DFF;
+      --purple-2:      #4f2cc4;
+      --purple-light:  #b8a0ff;
+      --purple-glow:   rgba(106,61,255,0.18);
+      --white:         #F8FAFC;
+      --grey-light:    #C8CBD8;
+      --grey-mid:      #8A8D9F;
+      --grey-dark:     #3A3D52;
+      --bg:            #02020E;
+      --bg-card:       rgba(255,255,255,0.028);
+      --bg-card-hover: rgba(255,255,255,0.05);
+      --border:        rgba(255,255,255,0.07);
+      --border-hover:  rgba(106,61,255,0.38);
+    }
+
+    html { background: var(--bg); scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* layered ambient background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 90% 55% at 50% -5%,  rgba(106,61,255,0.14) 0%, transparent 65%),
+        radial-gradient(ellipse 55% 45% at 95% 40%,  rgba(106,61,255,0.07) 0%, transparent 55%),
+        radial-gradient(ellipse 45% 40% at 5%  70%,  rgba(80,28,180,0.06)  0%, transparent 55%),
+        radial-gradient(ellipse 65% 50% at 55% 100%, rgba(106,61,255,0.05) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Layout ── */
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+
+    section, nav, footer { position: relative; z-index: 1; }
+
+    /* ── Typography ── */
+    .font-display { font-family: 'Sora', sans-serif; }
+
+    .grad-text {
+      background: linear-gradient(118deg, #8060FF 0%, #c4adff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: -0.01em;
+      cursor: pointer;
+      border: none;
+      outline: none;
+      transition: opacity 0.16s, transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s;
+    }
+    .btn:active { transform: scale(0.97) !important; }
+
+    .btn-primary {
+      background: linear-gradient(130deg, #6A3DFF 0%, #4f2cc4 100%);
+      color: #fff;
+      padding: 12px 26px;
+      border-radius: 100px;
+      box-shadow: 0 0 28px rgba(106,61,255,0.38), 0 2px 8px rgba(0,0,0,0.4);
+    }
+    .btn-primary:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+      box-shadow: 0 0 40px rgba(106,61,255,0.5), 0 4px 16px rgba(0,0,0,0.5);
+    }
+    .btn-primary:focus-visible { outline: 2px solid var(--purple-light); outline-offset: 3px; }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--grey-light);
+      padding: 12px 26px;
+      border-radius: 100px;
+      border: 1px solid rgba(255,255,255,0.14);
+    }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.32); color: #fff; transform: translateY(-1px); }
+    .btn-ghost:focus-visible { outline: 2px solid var(--purple-light); outline-offset: 3px; }
+
+    .btn-lg { padding: 15px 34px; font-size: 16px; }
+
+    /* ── Badge pill ── */
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(106,61,255,0.1);
+      border: 1px solid rgba(106,61,255,0.26);
+      border-radius: 100px;
+      padding: 5px 14px;
+      font-family: 'Sora', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--purple-light);
+    }
+    .pill-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--purple-light);
+      animation: breathe 2.2s ease-in-out infinite;
+    }
+    @keyframes breathe {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: 0.45; transform: scale(0.75); }
+    }
+
+    /* ── Section label ── */
+    .section-label {
+      font-family: 'Sora', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--purple);
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    /* ── Divider ── */
+    hr.hr { border: none; border-top: 1px solid var(--border); }
+
+    /* ── Fade-up ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fu  { animation: fadeUp 0.75s cubic-bezier(0.22,1,0.36,1) both; }
+    .d1  { animation-delay: 0.08s; }
+    .d2  { animation-delay: 0.18s; }
+    .d3  { animation-delay: 0.30s; }
+    .d4  { animation-delay: 0.42s; }
+
+
+    /* ════════════════════════════════
+       NAV
+    ════════════════════════════════ */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      padding: 0 48px;
+      height: 66px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(2,2,14,0.82);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(106,61,255,0.10);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      text-decoration: none;
+    }
+    .nav-logo-img {
+      width: 34px;
+      height: 34px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 8px rgba(106,61,255,0.5));
+    }
+    .nav-logo-copy {
+      font-family: 'Sora', sans-serif;
+      font-size: 15px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+    .nav-logo-copy em {
+      font-style: normal;
+      display: block;
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--grey-mid);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 26px;
+    }
+    .nav-link {
+      color: var(--grey-mid);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.15s;
+    }
+    .nav-link:hover { color: #fff; }
+    .nav-link:focus-visible { outline: 2px solid var(--purple-light); border-radius: 4px; }
+
+    .nav-linkedin {
+      display: flex;
+      align-items: center;
+      color: var(--grey-mid);
+      transition: color 0.15s;
+    }
+    .nav-linkedin:hover { color: #0A66C2; }
+    .nav-linkedin:focus-visible { outline: 2px solid var(--purple-light); border-radius: 4px; }
+
+
+    /* ════════════════════════════════
+       HERO
+    ════════════════════════════════ */
+    #hero {
+      padding-top: 108px;
+      padding-bottom: 72px;
+      overflow: hidden;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 440px;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .hero-eyebrow { margin-bottom: 22px; }
+
+    .hero-h1 {
+      font-family: 'Sora', sans-serif;
+      font-size: clamp(40px, 5.2vw, 72px);
+      font-weight: 800;
+      line-height: 1.00;
+      letter-spacing: -0.04em;
+      color: #fff;
+      margin: 0 0 22px 0;
+    }
+
+    .hero-desc {
+      font-size: 17px;
+      color: var(--grey-mid);
+      line-height: 1.75;
+      margin: 0 0 36px 0;
+      max-width: 500px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 13px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    /* stats row */
+    .hero-stats {
+      display: flex;
+      gap: 36px;
+      margin-top: 48px;
+      padding-top: 34px;
+      border-top: 1px solid var(--border);
+    }
+    .stat-item {}
+    .stat-num {
+      font-family: 'Sora', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #fff;
+      line-height: 1;
+    }
+    .stat-lbl {
+      font-size: 12px;
+      color: var(--grey-mid);
+      margin-top: 4px;
+      font-weight: 500;
+    }
+
+    /* Photo panel */
+    .hero-photo-panel {
+      position: relative;
+    }
+
+    .hero-photo-frame {
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      border-radius: 24px;
+      overflow: hidden;
+      position: relative;
+      box-shadow:
+        0 0 0 1px rgba(106,61,255,0.2),
+        0 32px 80px rgba(0,0,0,0.6),
+        0 0 80px rgba(106,61,255,0.12);
+    }
+
+    .hero-photo-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+      image-rendering: auto;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* colour treatment layer */
+    .hero-photo-frame::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(to top, rgba(2,2,14,0.75) 0%, rgba(2,2,14,0.1) 40%, transparent 70%),
+        linear-gradient(135deg, rgba(106,61,255,0.12) 0%, transparent 60%);
+      mix-blend-mode: normal;
+    }
+
+    .hero-photo-caption {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 28px 28px 24px;
+      z-index: 2;
+    }
+    .hero-photo-caption strong {
+      display: block;
+      font-family: 'Sora', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.02em;
+    }
+    .hero-photo-caption span {
+      font-size: 12px;
+      color: var(--purple-light);
+      font-weight: 500;
+      letter-spacing: 0.04em;
+    }
+
+    /* floating badge */
+    .hero-float {
+      position: absolute;
+      bottom: 60px;
+      left: -28px;
+      background: rgba(2,2,14,0.94);
+      border: 1px solid rgba(106,61,255,0.3);
+      border-radius: 16px;
+      padding: 14px 20px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 20px rgba(106,61,255,0.12);
+      z-index: 3;
+    }
+    .hero-float .f-num {
+      font-family: 'Sora', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      line-height: 1;
+      background: linear-gradient(118deg, #8060FF, #c4adff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-float .f-lbl {
+      font-size: 11px;
+      color: var(--grey-mid);
+      margin-top: 4px;
+      font-weight: 500;
+    }
+
+    /* purple orb behind photo */
+    .photo-orb {
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 340px; height: 340px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(106,61,255,0.18) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+
+    /* ════════════════════════════════
+       PLATFORM STRIP
+    ════════════════════════════════ */
+    .platform-strip {
+      padding: 28px 0;
+    }
+    .platform-inner {
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+    .platform-label {
+      font-size: 10px;
+      color: var(--grey-mid);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-weight: 600;
+      white-space: nowrap;
+      margin-right: 32px;
+      flex-shrink: 0;
+    }
+    .platform-logos {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      flex-wrap: wrap;
+    }
+    .platform-logos span {
+      font-family: 'Sora', sans-serif;
+      color: rgba(255,255,255,0.2);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      transition: color 0.2s;
+    }
+    .platform-logos span:hover { color: rgba(255,255,255,0.42); }
+
+
+    /* ════════════════════════════════
+       EPISODES
+    ════════════════════════════════ */
+    #episodes {
+      padding: 72px 0 96px;
+    }
+
+    .episodes-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .episodes-h2 {
+      font-family: 'Sora', sans-serif;
+      font-size: clamp(26px, 3vw, 40px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #fff;
+      line-height: 1.06;
+      margin: 6px 0 0;
+    }
+
+    /* ── Grid ── */
+    .ep-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    /* ── Card ── */
+    .ep-card {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      transition:
+        border-color 0.22s,
+        transform 0.22s cubic-bezier(0.34,1.56,0.64,1),
+        box-shadow 0.22s;
+    }
+    .ep-card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.45), 0 0 28px rgba(106,61,255,0.12);
+    }
+    .ep-card:focus-visible {
+      outline: 2px solid var(--purple-light);
+      outline-offset: 2px;
+    }
+
+    /* thumb — 4:3 to match YouTube hqdefault dimensions */
+    .ep-thumb-box {
+      position: relative;
+      aspect-ratio: 4 / 3;
+      overflow: hidden;
+      background: #0a0a22;
+    }
+
+    .ep-thumb-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.3s ease;
+      filter: contrast(1.03);
+    }
+    .ep-card:hover .ep-thumb-img { transform: scale(1.05); }
+
+    /* gradient overlay on thumb */
+    .ep-thumb-box::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(2,2,14,0.55) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    /* play overlay */
+    .ep-play {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(106,61,255,0.28);
+      opacity: 0;
+      transition: opacity 0.2s;
+      z-index: 2;
+    }
+    .ep-card:hover .ep-play { opacity: 1; }
+
+    .ep-play-circle {
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.95);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .ep-card:hover .ep-play-circle { transform: scale(1.08); }
+    .ep-play-circle svg { margin-left: 3px; }
+
+    /* fallback thumb */
+    .ep-thumb-fallback {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #0d0d28 0%, #1a0a3e 100%);
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(106,61,255,0.3);
+    }
+
+    /* card body */
+    .ep-body {
+      padding: 14px 16px 18px;
+    }
+
+    .ep-tag {
+      display: inline-block;
+      font-family: 'Sora', sans-serif;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--purple-light);
+      background: rgba(106,61,255,0.1);
+      border-radius: 100px;
+      padding: 3px 9px;
+      margin-bottom: 8px;
+    }
+
+    .ep-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.42;
+      color: #fff;
+      margin-bottom: 7px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      letter-spacing: -0.01em;
+    }
+
+    .ep-guest {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      color: var(--grey-mid);
+      font-weight: 500;
+    }
+    .ep-guest svg { flex-shrink: 0; opacity: 0.6; }
+
+    /* More button */
+    .episodes-more {
+      text-align: center;
+      margin-top: 44px;
+    }
+
+
+    /* ════════════════════════════════
+       CTA / SUBSCRIBE
+    ════════════════════════════════ */
+    #subscribe {
+      padding: 96px 0;
+      text-align: center;
+      background:
+        radial-gradient(ellipse 85% 60% at 50% 0%,   rgba(106,61,255,0.16) 0%, transparent 70%),
+        radial-gradient(ellipse 55% 45% at 50% 100%,  rgba(79,44,196,0.10) 0%, transparent 70%);
+      border-top: 1px solid rgba(106,61,255,0.14);
+      border-bottom: 1px solid rgba(106,61,255,0.14);
+    }
+
+    .cta-eyebrow { margin-bottom: 24px; }
+    .cta-h2 {
+      font-family: 'Sora', sans-serif;
+      font-size: clamp(32px, 4vw, 54px);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.04;
+      color: #fff;
+      margin: 0 0 18px 0;
+    }
+    .cta-sub {
+      font-size: 16px;
+      color: var(--grey-mid);
+      line-height: 1.72;
+      margin: 0 auto 38px;
+      max-width: 460px;
+    }
+    .cta-actions {
+      display: flex;
+      gap: 13px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+
+    /* ════════════════════════════════
+       FOOTER
+    ════════════════════════════════ */
+    footer {
+      padding: 36px 0;
+    }
+    .footer-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-links {
+      display: flex;
+      gap: 22px;
+    }
+    .footer-links a {
+      font-size: 13px;
+      color: var(--grey-mid);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .footer-links a:hover { color: #fff; }
+    .footer-copy {
+      font-size: 12px;
+      color: var(--grey-dark);
+    }
+
+
+    /* ════════════════════════════════
+       RESPONSIVE
+    ════════════════════════════════ */
+    @media (max-width: 1100px) {
+      .ep-grid { grid-template-columns: repeat(3, 1fr); }
+      .hero-grid { grid-template-columns: 1fr 360px; gap: 56px; }
+    }
+
+    @media (max-width: 860px) {
+      nav { padding: 0 20px; }
+      .nav-link:not(.btn-primary) { display: none; }
+      .container { padding: 0 20px; }
+      .hero-grid { grid-template-columns: 1fr; gap: 48px; }
+      .hero-photo-panel { max-width: 380px; margin: 0 auto; }
+      .hero-float { left: -10px; }
+      .ep-grid { grid-template-columns: repeat(2, 1fr); }
+      .platform-inner { flex-wrap: wrap; }
+    }
+
+    @media (max-width: 520px) {
+      .ep-grid { grid-template-columns: 1fr; }
+      .hero-h1 { font-size: 38px; }
+      .hero-stats { flex-wrap: wrap; gap: 22px; }
+      .footer-row { flex-direction: column; align-items: flex-start; }
+    }
+  /* ── Beams Background ── */
+  #beams-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  #beams-bg canvas {
+    position: absolute;
+    inset: 0;
+    filter: blur(40px);
+  }
+  /* keep nav, sections, footer above the canvas */
+  body::before { z-index: 1; }
+  nav, section, footer, hr, .platform-strip { position: relative; z-index: 2; }
+  </style>
+</head>
+
+<body>
+
+<!-- Beams animated background -->
+<div id="beams-bg" aria-hidden="true"></div>
+
+<!-- ═══════════════════════════════
+     NAV
+═══════════════════════════════ -->
+<nav>
+  <a href="#hero" class="nav-logo">
+    <img
+      src="brand assets/ChatGPT Image Mar 29, 2026, 06_20_45 PM.png"
+      alt="Apex Pipeline Systems"
+      class="nav-logo-img"
+    >
+    <div class="nav-logo-copy">
+      Apex Pipeline
+      <em>Podcast</em>
+    </div>
+  </a>
+  <div class="nav-right">
+    <a href="#episodes" class="nav-link">Episodes</a>
+    <a href="services.html" class="nav-link">Services</a>
+    <a href="https://www.youtube.com/@Apexpipelinepodcast" target="_blank" rel="noopener" class="nav-link">YouTube</a>
+    <a href="https://www.linkedin.com/in/deangelo-satcher-35061a24b/" target="_blank" rel="noopener" class="nav-linkedin" aria-label="DeAngelo on LinkedIn">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+    </a>
+    <a href="https://www.youtube.com/@Apexpipelinepodcast?sub_confirmation=1" target="_blank" rel="noopener" class="btn btn-primary">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.19a3.02 3.02 0 00-2.12-2.14C19.54 3.5 12 3.5 12 3.5s-7.54 0-9.38.55A3.02 3.02 0 00.5 6.19C0 8.04 0 12 0 12s0 3.96.5 5.81a3.02 3.02 0 002.12 2.14C4.46 20.5 12 20.5 12 20.5s7.54 0 9.38-.55a3.02 3.02 0 002.12-2.14C24 15.96 24 12 24 12s0-3.96-.5-5.81zM9.75 15.52V8.48L15.5 12l-5.75 3.52z"/></svg>
+      Subscribe
+    </a>
+  </div>
+</nav>
+
+
+<!-- ═══════════════════════════════
+     HERO
+═══════════════════════════════ -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-grid">
+
+      <!-- Copy -->
+      <div>
+        <div class="hero-eyebrow fu">
+          <div class="pill">
+            <div class="pill-dot"></div>
+            New Episodes Every Week
+          </div>
+        </div>
+
+        <h1 class="hero-h1 fu d1">
+          The Apex<br>
+          <span class="grad-text">Pipeline</span><br>
+          Podcast
+        </h1>
+
+        <p class="hero-desc fu d2">
+          Unfiltered conversations with the founders, operators, and closers who are building real pipelines, landing high-ticket clients, and scaling beyond referrals.
+        </p>
+
+        <div class="hero-actions fu d3">
+          <a
+            href="https://www.youtube.com/@Apexpipelinepodcast?sub_confirmation=1"
+            target="_blank" rel="noopener"
+            class="btn btn-primary btn-lg"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.19a3.02 3.02 0 00-2.12-2.14C19.54 3.5 12 3.5 12 3.5s-7.54 0-9.38.55A3.02 3.02 0 00.5 6.19C0 8.04 0 12 0 12s0 3.96.5 5.81a3.02 3.02 0 002.12 2.14C4.46 20.5 12 20.5 12 20.5s7.54 0 9.38-.55a3.02 3.02 0 002.12-2.14C24 15.96 24 12 24 12s0-3.96-.5-5.81zM9.75 15.52V8.48L15.5 12l-5.75 3.52z"/></svg>
+            Subscribe on YouTube
+          </a>
+          <a href="#episodes" class="btn btn-ghost btn-lg">
+            Watch Episodes
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+
+        <div class="hero-stats fu d4">
+          <div class="stat-item">
+            <div class="stat-num grad-text">15+</div>
+            <div class="stat-lbl">Episodes live</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num grad-text">100%</div>
+            <div class="stat-lbl">Founder-led insights</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num grad-text">Free</div>
+            <div class="stat-lbl">On YouTube</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Photo -->
+      <div class="hero-photo-panel fu d2">
+        <div class="photo-orb"></div>
+        <div class="hero-photo-frame">
+          <img
+            src="mjc1spt1sia69ilpzsoflsqf.png"
+            alt="DeAngelo — Host, Apex Pipeline Podcast"
+          >
+          <div class="hero-photo-caption">
+            <strong>DeAngelo</strong>
+            <span>Host &amp; Founder · Apex Pipeline Systems</span>
+          </div>
+        </div>
+        <div class="hero-float">
+          <div class="f-num">15+</div>
+          <div class="f-lbl">Episodes &amp; counting</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════
+     PLATFORM STRIP
+═══════════════════════════════ -->
+<hr class="hr">
+<div class="platform-strip">
+  <div class="container">
+    <div class="platform-inner">
+      <span class="platform-label">Listen &amp; watch on</span>
+      <div class="platform-logos">
+        <span>YouTube</span>
+      </div>
+    </div>
+  </div>
+</div>
+<hr class="hr">
+
+
+<!-- ═══════════════════════════════
+     EPISODES
+═══════════════════════════════ -->
+<section id="episodes">
+  <div class="container">
+
+    <div class="episodes-header fu">
+      <div>
+        <span class="section-label">All Episodes</span>
+        <h2 class="episodes-h2">Latest Episodes</h2>
+      </div>
+      <a
+        href="https://www.youtube.com/@Apexpipelinepodcast"
+        target="_blank" rel="noopener"
+        class="btn btn-ghost"
+      >
+        View all on YouTube
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+
+    <div class="ep-grid" id="epGrid"></div>
+
+    <div class="episodes-more">
+      <a
+        href="https://www.youtube.com/@Apexpipelinepodcast"
+        target="_blank" rel="noopener"
+        class="btn btn-ghost btn-lg"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.19a3.02 3.02 0 00-2.12-2.14C19.54 3.5 12 3.5 12 3.5s-7.54 0-9.38.55A3.02 3.02 0 00.5 6.19C0 8.04 0 12 0 12s0 3.96.5 5.81a3.02 3.02 0 002.12 2.14C4.46 20.5 12 20.5 12 20.5s7.54 0 9.38-.55a3.02 3.02 0 002.12-2.14C24 15.96 24 12 24 12s0-3.96-.5-5.81zM9.75 15.52V8.48L15.5 12l-5.75 3.52z"/></svg>
+        Watch All Episodes on YouTube
+      </a>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════
+     SUBSCRIBE CTA
+═══════════════════════════════ -->
+<section id="subscribe">
+  <div class="container">
+    <div class="cta-eyebrow">
+      <div class="pill" style="display:inline-flex;">
+        <div class="pill-dot"></div>
+        New Episodes Every Week
+      </div>
+    </div>
+    <h2 class="cta-h2 fu">
+      Never Miss an<br>
+      <span class="grad-text">Episode</span>
+    </h2>
+    <p class="cta-sub fu d1">
+      Subscribe for weekly conversations with top founders on sales strategy, client acquisition, and building businesses that scale.
+    </p>
+    <div class="cta-actions fu d2">
+      <a
+        href="https://www.youtube.com/@Apexpipelinepodcast?sub_confirmation=1"
+        target="_blank" rel="noopener"
+        class="btn btn-primary btn-lg"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.19a3.02 3.02 0 00-2.12-2.14C19.54 3.5 12 3.5 12 3.5s-7.54 0-9.38.55A3.02 3.02 0 00.5 6.19C0 8.04 0 12 0 12s0 3.96.5 5.81a3.02 3.02 0 002.12 2.14C4.46 20.5 12 20.5 12 20.5s7.54 0 9.38-.55a3.02 3.02 0 002.12-2.14C24 15.96 24 12 24 12s0-3.96-.5-5.81zM9.75 15.52V8.48L15.5 12l-5.75 3.52z"/></svg>
+        Subscribe on YouTube
+      </a>
+      <a
+        href="https://www.youtube.com/@Apexpipelinepodcast"
+        target="_blank" rel="noopener"
+        class="btn btn-ghost btn-lg"
+      >
+        Visit Channel
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════
+     FOOTER
+═══════════════════════════════ -->
+<hr class="hr">
+<footer>
+  <div class="container">
+    <div class="footer-row">
+      <a href="#hero" class="nav-logo" style="text-decoration:none;">
+        <img src="brand assets/ChatGPT Image Mar 29, 2026, 06_20_45 PM.png" alt="Apex Pipeline Systems" class="nav-logo-img">
+        <div class="nav-logo-copy">
+          Apex Pipeline
+          <em>Podcast</em>
+        </div>
+      </a>
+      <div class="footer-links">
+        <a href="#episodes">Episodes</a>
+        <a href="services.html">Services</a>
+        <a href="https://www.youtube.com/@Apexpipelinepodcast" target="_blank" rel="noopener">YouTube</a>
+        <a href="https://www.linkedin.com/in/deangelo-satcher-35061a24b/" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:5px;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          LinkedIn
+        </a>
+        <a href="#subscribe">Subscribe</a>
+      </div>
+      <div class="footer-copy">&copy; 2026 Apex Pipeline Systems. All rights reserved.</div>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     EPISODE DATA
+     ─────────────────────────────────────────────────────
+     To update: edit the EPISODES array below.
+     • videoId  = YouTube video ID (from youtube.com/watch?v=ID)
+     • title    = episode title shown on card
+     • guest    = guest name / role
+     • tag      = short category badge
+
+     Thumbnails load automatically from YouTube's CDN.
+     You can also drop a custom thumbnail image into brand assets/
+     and set  thumb: 'brand assets/your-image.jpg'  on any entry
+     to override the YouTube thumbnail.
+══════════════════════════════════════════════════════ -->
+<script>
+const EPISODES = [
+  {
+    videoId: 'dXuahZHjSns',
+    title: 'The Man Behind McAfee\'s $200M MSSP Channel on Why Most AI Vendors Are Lying',
+    guest: 'Norman Currie',
+    tag: 'AI & MSSP'
+  },
+  {
+    videoId: 'rYdjbS5wvxA',
+    title: 'This Cybersecurity CEO Breaks AI for a Living',
+    guest: 'Eric Vanderburg',
+    tag: 'Cybersecurity'
+  },
+  {
+    videoId: 'IMwliTso7ko',
+    title: 'From Kansas to the Largest CPA MSP in North America',
+    guest: 'Randy Johnston',
+    tag: 'MSP'
+  },
+  {
+    videoId: 'D5hQfIlW2GE',
+    title: 'Cyber Insurance Only Paid 44% of Claims Last Year — Now What?',
+    guest: 'James Oliverio',
+    tag: 'Cybersecurity'
+  },
+  {
+    videoId: 'Bz8mJH_0M6M',
+    title: 'The PBM Scam: How 3 Companies Control 80% of Your Pharmacy',
+    guest: 'Guest Interview',
+    tag: 'Healthcare'
+  },
+  {
+    videoId: 'y0XqbssAke4',
+    title: '25 Years in IT: What Most MSPs Are Getting Wrong',
+    guest: 'Jason Romer',
+    tag: 'MSP'
+  },
+  {
+    videoId: 'Lo_xJcsKYzg',
+    title: 'Why Most Small Businesses Are NOT Ready for a Cyber Attack',
+    guest: 'Aaron Birnbaum',
+    tag: 'Cybersecurity'
+  },
+  {
+    videoId: 'QM6Y-PRzyY4',
+    title: 'How a Small Consulting Firm Lands Fortune 1000 Clients',
+    guest: 'Trevor Wragg',
+    tag: 'Sales'
+  },
+  {
+    videoId: 'UibfIJba7vc',
+    title: 'Why Most MSPs Are Using AI Wrong',
+    guest: 'My-Ngoc "Menop" Nguyen',
+    tag: 'AI & MSP'
+  },
+  {
+    videoId: 't1dKDjvntMU',
+    title: 'Why Most Companies Are NOT Ready for a Cyber Attack',
+    guest: 'Joshua Sorenson',
+    tag: 'Cybersecurity'
+  },
+  {
+    videoId: 'Or18vigVhhw',
+    title: 'DOGE Gutted His Government Contracts — Here\'s How He Survived',
+    guest: 'Dan Van Wagenen',
+    tag: 'Business'
+  },
+  {
+    videoId: 'VIBDYG1rBCo',
+    title: 'The Importance of SEO for Growing Your Business',
+    guest: 'Donny Zanger',
+    tag: 'Marketing'
+  },
+  {
+    videoId: '-fXfINmgUFc',
+    title: 'The MSP Growth Playbook: Speak Business, Not Tech',
+    guest: 'Peter Perez',
+    tag: 'Growth'
+  },
+  {
+    videoId: 'DHTfu0Wygkw',
+    title: 'From Zero Experience to Pen Tester — The Unorthodox Path Into Cybersecurity',
+    guest: 'Chris Bingham',
+    tag: 'Career'
+  },
+  {
+    videoId: 'gVdVPMASjJo',
+    title: '23 Years in the Air Force Taught Him Cyber — Now He\'s Protecting Small Businesses',
+    guest: 'Vince Romney',
+    tag: 'Cybersecurity'
+  }
+];
+
+// ── Build cards ──────────────────────────────────────────
+function esc(s) {
+  return s
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+function buildCard(ep) {
+  const href   = `https://youtu.be/${ep.videoId}`;
+  // hqdefault (480×360) is always available; sddefault/mqdefault as further fallback
+  const thumb  = ep.thumb
+    ? ep.thumb
+    : `https://i.ytimg.com/vi/${ep.videoId}/hqdefault.jpg`;
+  const thumbFallback = ep.thumb
+    ? ep.thumb
+    : `https://i.ytimg.com/vi/${ep.videoId}/mqdefault.jpg`;
+
+  return `
+<a href="${esc(href)}" target="_blank" rel="noopener" class="ep-card">
+  <div class="ep-thumb-box">
+    <img
+      class="ep-thumb-img"
+      src="${esc(thumb)}"
+      alt="${esc(ep.title)}"
+      loading="eager"
+      onerror="if(!this.dataset.tried){this.dataset.tried='1';this.src='${esc(thumbFallback)}'}else{this.style.display='none';this.nextElementSibling.style.display='flex'}"
+    >
+    <div class="ep-thumb-fallback" style="display:none">
+      <svg width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.4" viewBox="0 0 24 24" opacity="0.3">
+        <polygon points="5,3 19,12 5,21"/>
+      </svg>
+    </div>
+    <div class="ep-play">
+      <div class="ep-play-circle">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="#6A3DFF"><polygon points="5,3 19,12 5,21"/></svg>
+      </div>
+    </div>
+  </div>
+  <div class="ep-body">
+    <span class="ep-tag">${esc(ep.tag)}</span>
+    <div class="ep-title">${esc(ep.title)}</div>
+    <div class="ep-guest">
+      <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+      </svg>
+      ${esc(ep.guest)}
+    </div>
+  </div>
+</a>`;
+}
+
+document.getElementById('epGrid').innerHTML = EPISODES.map(buildCard).join('');
+</script>
+
+<!-- ── Beams Background animation ── -->
+<script>
+(function () {
+  const container = document.getElementById('beams-bg');
+  if (!container) return;
+
+  const canvas = document.createElement('canvas');
+  container.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
+
+  const MINIMUM_BEAMS = 20;
+  const TOTAL_BEAMS   = Math.floor(MINIMUM_BEAMS * 1.5);
+
+  // Beam colours shifted toward the site's purple palette (hue 240-280)
+  function createBeam(w, h) {
+    const angle = -35 + Math.random() * 10;
+    return {
+      x:          Math.random() * w * 1.5 - w * 0.25,
+      y:          Math.random() * h * 1.5 - h * 0.25,
+      width:      30 + Math.random() * 60,
+      length:     h * 2.5,
+      angle:      angle,
+      speed:      0.6 + Math.random() * 1.2,
+      opacity:    0.12 + Math.random() * 0.16,
+      hue:        240 + Math.random() * 50,   // purple → violet range
+      pulse:      Math.random() * Math.PI * 2,
+      pulseSpeed: 0.02 + Math.random() * 0.03,
+    };
+  }
+
+  let beams = [];
+
+  function resize() {
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width  = window.innerWidth  * dpr;
+    canvas.height = window.innerHeight * dpr;
+    canvas.style.width  = window.innerWidth  + 'px';
+    canvas.style.height = window.innerHeight + 'px';
+    ctx.scale(dpr, dpr);
+    beams = Array.from({ length: TOTAL_BEAMS }, () =>
+      createBeam(window.innerWidth, window.innerHeight)
+    );
+  }
+
+  function resetBeam(beam, index) {
+    const spacing = window.innerWidth / 3;
+    const col     = index % 3;
+    beam.y       = window.innerHeight + 100;
+    beam.x       = col * spacing + spacing / 2 + (Math.random() - 0.5) * spacing * 0.5;
+    beam.width   = 100 + Math.random() * 100;
+    beam.speed   = 0.5 + Math.random() * 0.4;
+    beam.hue     = 240 + (index * 50) / TOTAL_BEAMS;
+    beam.opacity = 0.2 + Math.random() * 0.1;
+  }
+
+  function drawBeam(beam) {
+    ctx.save();
+    ctx.translate(beam.x, beam.y);
+    ctx.rotate(beam.angle * Math.PI / 180);
+
+    const pulsingOpacity = beam.opacity * (0.8 + Math.sin(beam.pulse) * 0.2);
+
+    const grad = ctx.createLinearGradient(0, 0, 0, beam.length);
+    grad.addColorStop(0,   `hsla(${beam.hue}, 85%, 65%, 0)`);
+    grad.addColorStop(0.1, `hsla(${beam.hue}, 85%, 65%, ${pulsingOpacity * 0.5})`);
+    grad.addColorStop(0.4, `hsla(${beam.hue}, 85%, 65%, ${pulsingOpacity})`);
+    grad.addColorStop(0.6, `hsla(${beam.hue}, 85%, 65%, ${pulsingOpacity})`);
+    grad.addColorStop(0.9, `hsla(${beam.hue}, 85%, 65%, ${pulsingOpacity * 0.5})`);
+    grad.addColorStop(1,   `hsla(${beam.hue}, 85%, 65%, 0)`);
+
+    ctx.fillStyle = grad;
+    ctx.fillRect(-beam.width / 2, 0, beam.width, beam.length);
+    ctx.restore();
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    beams.forEach((beam, i) => {
+      beam.y     -= beam.speed;
+      beam.pulse += beam.pulseSpeed;
+      if (beam.y + beam.length < -100) resetBeam(beam, i);
+      drawBeam(beam);
+    });
+
+    requestAnimationFrame(animate);
+  }
+
+  resize();
+  window.addEventListener('resize', resize);
+  animate();
+})();
+</script>
+
+</body>
+</html>

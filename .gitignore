@@ -1,0 +1,16 @@
+# Temp and processing files
+.tmp/
+temporary screenshots/
+*.png
+*.mjs
+*.py
+*.bat
+
+# Environment and credentials
+.env
+credentials.json
+token.json
+
+# Misc
+*.md
+node_modules/

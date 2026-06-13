@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# FILL THIS IN: replace with your live domain
+Sitemap: https://REPLACE_WITH_DOMAIN/sitemap.xml

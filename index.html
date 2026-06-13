@@ -1,1254 +1,839 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Apex Pipeline Podcast</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
-
-  <style>
-    /* ── Reset ── */
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-    :root {
-      --purple:        #6A3DFF;
-      --purple-2:      #4f2cc4;
-      --purple-light:  #b8a0ff;
-      --purple-glow:   rgba(106,61,255,0.18);
-      --white:         #F8FAFC;
-      --grey-light:    #C8CBD8;
-      --grey-mid:      #8A8D9F;
-      --grey-dark:     #3A3D52;
-      --bg:            #02020E;
-      --bg-card:       rgba(255,255,255,0.028);
-      --bg-card-hover: rgba(255,255,255,0.05);
-      --border:        rgba(255,255,255,0.07);
-      --border-hover:  rgba(106,61,255,0.38);
-    }
-
-    html { background: var(--bg); scroll-behavior: smooth; }
-
-    body {
-      background: var(--bg);
-      color: var(--white);
-      font-family: 'DM Sans', sans-serif;
-      overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-
-    /* layered ambient background */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 90% 55% at 50% -5%,  rgba(106,61,255,0.14) 0%, transparent 65%),
-        radial-gradient(ellipse 55% 45% at 95% 40%,  rgba(106,61,255,0.07) 0%, transparent 55%),
-        radial-gradient(ellipse 45% 40% at 5%  70%,  rgba(80,28,180,0.06)  0%, transparent 55%),
-        radial-gradient(ellipse 65% 50% at 55% 100%, rgba(106,61,255,0.05) 0%, transparent 60%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* ── Layout ── */
-    .container {
-      max-width: 1240px;
-      margin: 0 auto;
-      padding: 0 48px;
-    }
-
-    section, nav, footer { position: relative; z-index: 1; }
-
-    /* ── Typography ── */
-    .font-display { font-family: 'Sora', sans-serif; }
-
-    .grad-text {
-      background: linear-gradient(118deg, #8060FF 0%, #c4adff 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    /* ── Buttons ── */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      text-decoration: none;
-      font-family: 'Sora', sans-serif;
-      font-weight: 700;
-      font-size: 14px;
-      letter-spacing: -0.01em;
-      cursor: pointer;
-      border: none;
-      outline: none;
-      transition: opacity 0.16s, transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s;
-    }
-    .btn:active { transform: scale(0.97) !important; }
-
-    .btn-primary {
-      background: linear-gradient(130deg, #6A3DFF 0%, #4f2cc4 100%);
-      color: #fff;
-      padding: 12px 26px;
-      border-radius: 100px;
-      box-shadow: 0 0 28px rgba(106,61,255,0.38), 0 2px 8px rgba(0,0,0,0.4);
-    }
-    .btn-primary:hover {
-      opacity: 0.9;
-      transform: translateY(-2px);
-      box-shadow: 0 0 40px rgba(106,61,255,0.5), 0 4px 16px rgba(0,0,0,0.5);
-    }
-    .btn-primary:focus-visible { outline: 2px solid var(--purple-light); outline-offset: 3px; }
-
-    .btn-ghost {
-      background: transparent;
-      color: var(--grey-light);
-      padding: 12px 26px;
-      border-radius: 100px;
-      border: 1px solid rgba(255,255,255,0.14);
-    }
-    .btn-ghost:hover { border-color: rgba(255,255,255,0.32); color: #fff; transform: translateY(-1px); }
-    .btn-ghost:focus-visible { outline: 2px solid var(--purple-light); outline-offset: 3px; }
-
-    .btn-lg { padding: 15px 34px; font-size: 16px; }
-
-    /* ── Badge pill ── */
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      background: rgba(106,61,255,0.1);
-      border: 1px solid rgba(106,61,255,0.26);
-      border-radius: 100px;
-      padding: 5px 14px;
-      font-family: 'Sora', sans-serif;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--purple-light);
-    }
-    .pill-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--purple-light);
-      animation: breathe 2.2s ease-in-out infinite;
-    }
-    @keyframes breathe {
-      0%,100% { opacity: 1; transform: scale(1); }
-      50%      { opacity: 0.45; transform: scale(0.75); }
-    }
-
-    /* ── Section label ── */
-    .section-label {
-      font-family: 'Sora', sans-serif;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--purple);
-      margin-bottom: 12px;
-      display: block;
-    }
-
-    /* ── Divider ── */
-    hr.hr { border: none; border-top: 1px solid var(--border); }
-
-    /* ── Fade-up ── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(28px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .fu  { animation: fadeUp 0.75s cubic-bezier(0.22,1,0.36,1) both; }
-    .d1  { animation-delay: 0.08s; }
-    .d2  { animation-delay: 0.18s; }
-    .d3  { animation-delay: 0.30s; }
-    .d4  { animation-delay: 0.42s; }
-
-
-    /* ════════════════════════════════
-       NAV
-    ════════════════════════════════ */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 200;
-      padding: 0 48px;
-      height: 66px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: rgba(2,2,14,0.82);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(106,61,255,0.10);
-    }
-
-    .nav-logo {
-      display: flex;
-      align-items: center;
-      gap: 11px;
-      text-decoration: none;
-    }
-    .nav-logo-img {
-      width: 34px;
-      height: 34px;
-      object-fit: contain;
-      filter: drop-shadow(0 0 8px rgba(106,61,255,0.5));
-    }
-    .nav-logo-copy {
-      font-family: 'Sora', sans-serif;
-      font-size: 15px;
-      font-weight: 800;
-      color: #fff;
-      letter-spacing: -0.02em;
-      line-height: 1.1;
-    }
-    .nav-logo-copy em {
-      font-style: normal;
-      display: block;
-      font-size: 9px;
-      font-weight: 500;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--grey-mid);
-    }
-
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 26px;
-    }
-    .nav-link {
-      color: var(--grey-mid);
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 500;
-      transition: color 0.15s;
-    }
-    .nav-link:hover { color: #fff; }
-    .nav-link:focus-visible { outline: 2px solid var(--purple-light); border-radius: 4px; }
-
-    .nav-linkedin {
-      display: flex;
-      align-items: center;
-      color: var(--grey-mid);
-      transition: color 0.15s;
-    }
-    .nav-linkedin:hover { color: #0A66C2; }
-    .nav-linkedin:focus-visible { outline: 2px solid var(--purple-light); border-radius: 4px; }
-
-
-    /* ════════════════════════════════
-       HERO
-    ════════════════════════════════ */
-    #hero {
-      padding-top: 108px;
-      padding-bottom: 72px;
-      overflow: hidden;
-    }
-
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1fr 440px;
-      gap: 80px;
-      align-items: center;
-    }
-
-    .hero-eyebrow { margin-bottom: 22px; }
-
-    .hero-h1 {
-      font-family: 'Sora', sans-serif;
-      font-size: clamp(40px, 5.2vw, 72px);
-      font-weight: 800;
-      line-height: 1.00;
-      letter-spacing: -0.04em;
-      color: #fff;
-      margin: 0 0 22px 0;
-    }
-
-    .hero-desc {
-      font-size: 17px;
-      color: var(--grey-mid);
-      line-height: 1.75;
-      margin: 0 0 36px 0;
-      max-width: 500px;
-    }
-
-    .hero-actions {
-      display: flex;
-      gap: 13px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    /* stats row */
-    .hero-stats {
-      display: flex;
-      gap: 36px;
-      margin-top: 48px;
-      padding-top: 34px;
-      border-top: 1px solid var(--border);
-    }
-    .stat-item {}
-    .stat-num {
-      font-family: 'Sora', sans-serif;
-      font-size: 26px;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      color: #fff;
-      line-height: 1;
-    }
-    .stat-lbl {
-      font-size: 12px;
-      color: var(--grey-mid);
-      margin-top: 4px;
-      font-weight: 500;
-    }
-
-    /* Photo panel */
-    .hero-photo-panel {
-      position: relative;
-    }
-
-    .hero-photo-frame {
-      width: 100%;
-      aspect-ratio: 3 / 4;
-      border-radius: 24px;
-      overflow: hidden;
-      position: relative;
-      box-shadow:
-        0 0 0 1px rgba(106,61,255,0.2),
-        0 32px 80px rgba(0,0,0,0.6),
-        0 0 80px rgba(106,61,255,0.12);
-    }
-
-    .hero-photo-frame img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center top;
-      display: block;
-      image-rendering: auto;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    /* colour treatment layer */
-    .hero-photo-frame::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(to top, rgba(2,2,14,0.75) 0%, rgba(2,2,14,0.1) 40%, transparent 70%),
-        linear-gradient(135deg, rgba(106,61,255,0.12) 0%, transparent 60%);
-      mix-blend-mode: normal;
-    }
-
-    .hero-photo-caption {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      padding: 28px 28px 24px;
-      z-index: 2;
-    }
-    .hero-photo-caption strong {
-      display: block;
-      font-family: 'Sora', sans-serif;
-      font-size: 18px;
-      font-weight: 800;
-      color: #fff;
-      letter-spacing: -0.02em;
-    }
-    .hero-photo-caption span {
-      font-size: 12px;
-      color: var(--purple-light);
-      font-weight: 500;
-      letter-spacing: 0.04em;
-    }
-
-    /* floating badge */
-    .hero-float {
-      position: absolute;
-      bottom: 60px;
-      left: -28px;
-      background: rgba(2,2,14,0.94);
-      border: 1px solid rgba(106,61,255,0.3);
-      border-radius: 16px;
-      padding: 14px 20px;
-      backdrop-filter: blur(16px);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 20px rgba(106,61,255,0.12);
-      z-index: 3;
-    }
-    .hero-float .f-num {
-      font-family: 'Sora', sans-serif;
-      font-size: 26px;
-      font-weight: 800;
-      line-height: 1;
-      background: linear-gradient(118deg, #8060FF, #c4adff);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .hero-float .f-lbl {
-      font-size: 11px;
-      color: var(--grey-mid);
-      margin-top: 4px;
-      font-weight: 500;
-    }
-
-    /* purple orb behind photo */
-    .photo-orb {
-      position: absolute;
-      top: -60px; right: -60px;
-      width: 340px; height: 340px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(106,61,255,0.18) 0%, transparent 70%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-
-    /* ════════════════════════════════
-       PLATFORM STRIP
-    ════════════════════════════════ */
-    .platform-strip {
-      padding: 28px 0;
-    }
-    .platform-inner {
-      display: flex;
-      align-items: center;
-      gap: 0;
-    }
-    .platform-label {
-      font-size: 10px;
-      color: var(--grey-mid);
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      font-weight: 600;
-      white-space: nowrap;
-      margin-right: 32px;
-      flex-shrink: 0;
-    }
-    .platform-logos {
-      display: flex;
-      align-items: center;
-      gap: 36px;
-      flex-wrap: wrap;
-    }
-    .platform-logos span {
-      font-family: 'Sora', sans-serif;
-      color: rgba(255,255,255,0.2);
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: -0.01em;
-      transition: color 0.2s;
-    }
-    .platform-logos span:hover { color: rgba(255,255,255,0.42); }
-
-
-    /* ════════════════════════════════
-       EPISODES
-    ════════════════════════════════ */
-    #episodes {
-      padding: 72px 0 96px;
-    }
-
-    .episodes-header {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      margin-bottom: 40px;
-      flex-wrap: wrap;
-      gap: 20px;
-    }
-
-    .episodes-h2 {
-      font-family: 'Sora', sans-serif;
-      font-size: clamp(26px, 3vw, 40px);
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      color: #fff;
-      line-height: 1.06;
-      margin: 6px 0 0;
-    }
-
-    /* ── Grid ── */
-    .ep-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-    }
-
-    /* ── Card ── */
-    .ep-card {
-      display: block;
-      text-decoration: none;
-      color: inherit;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      overflow: hidden;
-      transition:
-        border-color 0.22s,
-        transform 0.22s cubic-bezier(0.34,1.56,0.64,1),
-        box-shadow 0.22s;
-    }
-    .ep-card:hover {
-      border-color: var(--border-hover);
-      transform: translateY(-4px);
-      box-shadow: 0 16px 48px rgba(0,0,0,0.45), 0 0 28px rgba(106,61,255,0.12);
-    }
-    .ep-card:focus-visible {
-      outline: 2px solid var(--purple-light);
-      outline-offset: 2px;
-    }
-
-    /* thumb — 4:3 to match YouTube hqdefault dimensions */
-    .ep-thumb-box {
-      position: relative;
-      aspect-ratio: 4 / 3;
-      overflow: hidden;
-      background: #0a0a22;
-    }
-
-    .ep-thumb-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-      transition: transform 0.3s ease;
-      filter: contrast(1.03);
-    }
-    .ep-card:hover .ep-thumb-img { transform: scale(1.05); }
-
-    /* gradient overlay on thumb */
-    .ep-thumb-box::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to top, rgba(2,2,14,0.55) 0%, transparent 50%);
-      pointer-events: none;
-    }
-
-    /* play overlay */
-    .ep-play {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(106,61,255,0.28);
-      opacity: 0;
-      transition: opacity 0.2s;
-      z-index: 2;
-    }
-    .ep-card:hover .ep-play { opacity: 1; }
-
-    .ep-play-circle {
-      width: 46px; height: 46px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.95);
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-      transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
-    }
-    .ep-card:hover .ep-play-circle { transform: scale(1.08); }
-    .ep-play-circle svg { margin-left: 3px; }
-
-    /* fallback thumb */
-    .ep-thumb-fallback {
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, #0d0d28 0%, #1a0a3e 100%);
-      display: flex; align-items: center; justify-content: center;
-      color: rgba(106,61,255,0.3);
-    }
-
-    /* card body */
-    .ep-body {
-      padding: 14px 16px 18px;
-    }
-
-    .ep-tag {
-      display: inline-block;
-      font-family: 'Sora', sans-serif;
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--purple-light);
-      background: rgba(106,61,255,0.1);
-      border-radius: 100px;
-      padding: 3px 9px;
-      margin-bottom: 8px;
-    }
-
-    .ep-title {
-      font-family: 'Sora', sans-serif;
-      font-size: 13px;
-      font-weight: 700;
-      line-height: 1.42;
-      color: #fff;
-      margin-bottom: 7px;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      letter-spacing: -0.01em;
-    }
-
-    .ep-guest {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 11px;
-      color: var(--grey-mid);
-      font-weight: 500;
-    }
-    .ep-guest svg { flex-shrink: 0; opacity: 0.6; }
-
-    /* More button */
-    .episodes-more {
-      text-align: center;
-      margin-top: 44px;
-    }
-
-
-    /* ════════════════════════════════
-       CTA / SUBSCRIBE
-    ════════════════════════════════ */
-    #subscribe {
-      padding: 96px 0;
-      text-align: center;
-      background:
-        radial-gradient(ellipse 85% 60% at 50% 0%,   rgba(106,61,255,0.16) 0%, transparent 70%),
-        radial-gradient(ellipse 55% 45% at 50% 100%,  rgba(79,44,196,0.10) 0%, transparent 70%);
-      border-top: 1px solid rgba(106,61,255,0.14);
-      border-bottom: 1px solid rgba(106,61,255,0.14);
-    }
-
-    .cta-eyebrow { margin-bottom: 24px; }
-    .cta-h2 {
-      font-family: 'Sora', sans-serif;
-      font-size: clamp(32px, 4vw, 54px);
-      font-weight: 800;
-      letter-spacing: -0.04em;
-      line-height: 1.04;
-      color: #fff;
-      margin: 0 0 18px 0;
-    }
-    .cta-sub {
-      font-size: 16px;
-      color: var(--grey-mid);
-      line-height: 1.72;
-      margin: 0 auto 38px;
-      max-width: 460px;
-    }
-    .cta-actions {
-      display: flex;
-      gap: 13px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-
-    /* ════════════════════════════════
-       FOOTER
-    ════════════════════════════════ */
-    footer {
-      padding: 36px 0;
-    }
-    .footer-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 16px;
-    }
-    .footer-links {
-      display: flex;
-      gap: 22px;
-    }
-    .footer-links a {
-      font-size: 13px;
-      color: var(--grey-mid);
-      text-decoration: none;
-      transition: color 0.15s;
-    }
-    .footer-links a:hover { color: #fff; }
-    .footer-copy {
-      font-size: 12px;
-      color: var(--grey-dark);
-    }
-
-
-    /* ════════════════════════════════
-       RESPONSIVE
-    ════════════════════════════════ */
-    @media (max-width: 1100px) {
-      .ep-grid { grid-template-columns: repeat(3, 1fr); }
-      .hero-grid { grid-template-columns: 1fr 360px; gap: 56px; }
-    }
-
-    @media (max-width: 860px) {
-      nav { padding: 0 20px; }
-      .nav-link:not(.btn-primary) { display: none; }
-      .container { padding: 0 20px; }
-      .hero-grid { grid-template-columns: 1fr; gap: 48px; }
-      .hero-photo-panel { max-width: 380px; margin: 0 auto; }
-      .hero-float { left: -10px; }
-      .ep-grid { grid-template-columns: repeat(2, 1fr); }
-      .platform-inner { flex-wrap: wrap; }
-    }
-
-    @media (max-width: 520px) {
-      .ep-grid { grid-template-columns: 1fr; }
-      .hero-h1 { font-size: 38px; }
-      .hero-stats { flex-wrap: wrap; gap: 22px; }
-      .footer-row { flex-direction: column; align-items: flex-start; }
-    }
-  /* ── Beams Background ── */
-  #beams-bg {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    overflow: hidden;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- ===== SEO ===== -->
+  <title>SalesSignalIQ — Predictable B2B Pipeline from Outbound That Lands</title>
+  <meta name="description" content="SalesSignalIQ is a GTM agency that runs done-for-you cold email outbound for B2B teams — predictable pipeline and booked meetings, no SDR team required. Built on Clay, Instantly, Apollo & AI Ark." />
+  <meta name="theme-color" content="#6d4aff" />
+  <link rel="canonical" href="https://REPLACE_WITH_DOMAIN/" /><!-- FILL THIS IN: domain -->
+
+  <!-- ===== Open Graph / Twitter ===== -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="SalesSignalIQ — Predictable B2B Pipeline from Outbound" />
+  <meta property="og:description" content="Done-for-you cold email outbound that turns cold prospects into booked meetings and real pipeline." />
+  <meta property="og:image" content="https://REPLACE_WITH_DOMAIN/assets/og-image.png" /><!-- FILL THIS IN: domain -->
+  <meta property="og:url" content="https://REPLACE_WITH_DOMAIN/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="SalesSignalIQ — Predictable B2B Pipeline from Outbound" />
+  <meta name="twitter:description" content="Done-for-you cold email outbound that turns cold prospects into booked meetings and real pipeline." />
+  <meta name="twitter:image" content="https://REPLACE_WITH_DOMAIN/assets/og-image.png" />
+
+  <!-- ===== Favicons ===== -->
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+  <link rel="manifest" href="assets/site.webmanifest" />
+
+  <!-- ===== JSON-LD Organization schema ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "SalesSignalIQ",
+    "description": "GTM agency running done-for-you cold email outbound that books qualified meetings for B2B teams.",
+    "url": "https://REPLACE_WITH_DOMAIN/",
+    "logo": "https://REPLACE_WITH_DOMAIN/assets/logo.png",
+    "email": "contact@apexpipelinesystems.co",
+    "sameAs": [
+      "https://www.linkedin.com/company/REPLACE"
+    ]
   }
-  #beams-bg canvas {
-    position: absolute;
-    inset: 0;
-    filter: blur(40px);
-  }
-  /* keep nav, sections, footer above the canvas */
-  body::before { z-index: 1; }
-  nav, section, footer, hr, .platform-strip { position: relative; z-index: 2; }
-  </style>
+  </script>
+
+  <!-- ===== Styles ===== -->
+  <link rel="stylesheet" href="assets/site.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['"Clash Display"', "sans-serif"],
+            sans: ['"General Sans"', "ui-sans-serif", "system-ui", "sans-serif"],
+          },
+          maxWidth: { content: "1200px" },
+        },
+      },
+    };
+  </script>
 </head>
 
 <body>
+  <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:left-4 focus:top-4 focus:bg-white focus:px-4 focus:py-2 focus:rounded-lg focus:shadow">Skip to content</a>
 
-<!-- Beams animated background -->
-<div id="beams-bg" aria-hidden="true"></div>
+  <!-- ====================  NAV  ==================== -->
+  <header class="site-nav">
+    <div class="container flex items-center justify-between gap-6">
+      <a href="/" class="flex items-center gap-2.5 shrink-0" aria-label="SalesSignalIQ home">
+        <img src="assets/logo.png" alt="SalesSignalIQ" class="h-9 w-auto" width="160" height="40" />
+      </a>
 
-<!-- ═══════════════════════════════
-     NAV
-═══════════════════════════════ -->
-<nav>
-  <a href="#hero" class="nav-logo">
-    <img
-      src="brand assets/ChatGPT Image Mar 29, 2026, 06_20_45 PM.png"
-      alt="Apex Pipeline Systems"
-      class="nav-logo-img"
-    >
-    <div class="nav-logo-copy">
-      Apex Pipeline
-      <em>Podcast</em>
+      <nav class="hidden lg:flex items-center gap-9" aria-label="Primary">
+        <a href="#services" class="nav-link">Services</a>
+        <a href="#process" class="nav-link">Process</a>
+        <a href="#results" class="nav-link">Results</a>
+        <a href="#faq" class="nav-link">FAQ</a>
+      </nav>
+
+      <div class="hidden lg:flex items-center gap-3">
+        <!-- FILL THIS IN: booking link (Calendly / Cal.com) -->
+        <a href="https://calendly.com/contact-apexpipelinesystems/discovery-call-with-deangelo-clone" class="btn btn-ghost">Book a call</a>
+        <a href="#quote" class="btn btn-primary" data-magnetic>Get a quote</a>
+      </div>
+
+      <button class="hamburger lg:hidden grid gap-[6px] p-2 -mr-2" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+        <span></span><span></span><span></span>
+      </button>
     </div>
-  </a>
-  <div class="nav-right">
-    <a href="#episodes" class="nav-link">Episodes</a>
-    <a href="services.html" class="nav-link">Services</a>
-    <a href="https://www.youtube.com/@Apexpipelinepodcast" target="_blank" rel="noopener" class="nav-link">YouTube</a>
-    <a href="https://www.linkedin.com/in/deangelo-satcher-35061a24b/" target="_blank" rel="noopener" class="nav-linkedin" aria-label="DeAngelo on LinkedIn">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-    </a>
-    <a href="https://www.youtube.com/@Apexpipelinepodcast?sub_confirmation=1" target="_blank" rel="noopener" class="btn btn-primary">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.19a3.02 3.02 0 00-2.12-2.14C19.54 3.5 12 3.5 12 3.5s-7.54 0-9.38.55A3.02 3.02 0 00.5 6.19C0 8.04 0 12 0 12s0 3.96.5 5.81a3.02 3.02 0 002.12 2.14C4.46 20.5 12 20.5 12 20.5s7.54 0 9.38-.55a3.02 3.02 0 002.12-2.14C24 15.96 24 12 24 12s0-3.96-.5-5.81zM9.75 15.52V8.48L15.5 12l-5.75 3.52z"/></svg>
-      Subscribe
-    </a>
+  </header>
+
+  <!-- mobile menu -->
+  <div class="mobile-menu lg:hidden" id="mobile-menu">
+    <a href="#services">Services</a>
+    <a href="#process">Process</a>
+    <a href="#results">Results</a>
+    <a href="#faq">FAQ</a>
+    <div class="flex flex-col gap-3 mt-8">
+      <a href="https://calendly.com/contact-apexpipelinesystems/discovery-call-with-deangelo-clone" class="btn btn-ghost">Book a call</a>
+      <a href="#quote" class="btn btn-primary">Get a quote</a>
+    </div>
   </div>
-</nav>
 
+  <main id="main">
 
-<!-- ═══════════════════════════════
-     HERO
-═══════════════════════════════ -->
-<section id="hero">
-  <div class="container">
-    <div class="hero-grid">
-
-      <!-- Copy -->
-      <div>
-        <div class="hero-eyebrow fu">
-          <div class="pill">
-            <div class="pill-dot"></div>
-            New Episodes Every Week
+    <!-- ====================  HERO  ==================== -->
+    <section class="section pt-36 lg:pt-44 overflow-hidden">
+      <div class="container grid lg:grid-cols-[1.05fr_0.95fr] gap-14 items-center">
+        <div>
+          <p class="eyebrow reveal">For B2B teams that want pipeline, not just activity</p>
+          <h1 class="reveal font-display text-[clamp(2.6rem,6.2vw,5rem)] mt-5" style="--reveal-delay:80ms">
+            Predictable B2B pipeline from outbound that
+            <span class="gradient-text">actually lands.</span>
+          </h1>
+          <p class="lede reveal mt-6 max-w-xl" style="--reveal-delay:160ms">
+            We build and run a complete cold email engine for founders and sales leaders — qualified
+            meetings booked straight onto your calendar. No SDR team to hire, no spray-and-pray, no guesswork.
+          </p>
+          <div class="reveal mt-9 flex flex-wrap items-center gap-3.5" style="--reveal-delay:240ms">
+            <a href="#quote" class="btn btn-primary" data-magnetic>
+              Get your custom quote
+              <span class="btn-arrow" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </a>
+            <!-- FILL THIS IN: booking link -->
+            <a href="https://calendly.com/contact-apexpipelinesystems/discovery-call-with-deangelo-clone" class="btn btn-ghost">Book a call</a>
+          </div>
+          <div class="reveal mt-10 flex items-center gap-6 text-sm" style="--reveal-delay:320ms; color:var(--muted)">
+            <div class="flex items-center gap-2"><span class="inline-block w-2 h-2 rounded-full" style="background:var(--success)"></span> Booked-meeting model</div>
+            <div class="flex items-center gap-2"><span class="inline-block w-2 h-2 rounded-full" style="background:var(--violet)"></span> Deliverability-first</div>
           </div>
         </div>
 
-        <h1 class="hero-h1 fu d1">
-          The Apex<br>
-          <span class="grad-text">Pipeline</span><br>
-          Podcast
-        </h1>
+        <!-- code-built signal → pipeline visual -->
+        <div class="reveal relative" style="--reveal-delay:200ms" aria-hidden="true">
+          <div class="absolute -inset-6 dot-grid opacity-40 rounded-[var(--radius-lg)]"></div>
+          <div class="card relative p-6 lg:p-7 float-soft" style="border-radius:var(--radius-lg)">
+            <div class="flex items-center justify-between mb-5">
+              <span class="chip"><span class="w-2 h-2 rounded-full" style="background:var(--violet)"></span> Live pipeline</span>
+              <span class="text-xs font-medium" style="color:var(--muted)">this week</span>
+            </div>
 
-        <p class="hero-desc fu d2">
-          Unfiltered conversations with the founders, operators, and closers who are building real pipelines, landing high-ticket clients, and scaling beyond referrals.
+            <!-- signal flow SVG -->
+            <svg viewBox="0 0 360 150" class="w-full mb-5" role="img" aria-label="Signal to meeting flow">
+              <defs>
+                <linearGradient id="flow" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0" stop-color="var(--lavender)"/>
+                  <stop offset="1" stop-color="var(--violet)"/>
+                </linearGradient>
+              </defs>
+              <!-- nodes -->
+              <g font-family="General Sans" font-size="11" fill="var(--ink-soft)">
+                <rect x="2" y="58" width="78" height="34" rx="9" fill="var(--paper-2)" stroke="var(--line)"/>
+                <text x="41" y="79" text-anchor="middle">Cold list</text>
+                <rect x="141" y="20" width="84" height="34" rx="9" fill="var(--paper-2)" stroke="var(--line)"/>
+                <text x="183" y="41" text-anchor="middle">Outreach</text>
+                <rect x="141" y="96" width="84" height="34" rx="9" fill="var(--paper-2)" stroke="var(--line)"/>
+                <text x="183" y="117" text-anchor="middle">Reply</text>
+                <rect x="282" y="58" width="76" height="34" rx="9" fill="var(--violet)" />
+                <text x="320" y="79" text-anchor="middle" fill="#fff">Meeting</text>
+              </g>
+              <g stroke="url(#flow)" stroke-width="2" fill="none" class="signal-line">
+                <path d="M80 75 C 110 75, 110 37, 141 37"/>
+                <path d="M80 75 C 110 75, 110 113, 141 113"/>
+                <path d="M225 37 C 256 37, 256 75, 282 75"/>
+                <path d="M225 113 C 256 113, 256 75, 282 75"/>
+              </g>
+              <circle class="pulse-dot" cx="80" cy="75" r="4" fill="var(--violet)"/>
+              <circle class="pulse-dot" cx="320" cy="75" r="4" fill="var(--violet-700)"/>
+            </svg>
+
+            <div class="grid grid-cols-3 gap-3">
+              <div class="p-3 rounded-xl" style="background:var(--paper-2)">
+                <div class="font-display text-2xl">38<span class="text-base align-top" style="color:var(--violet)">%</span></div>
+                <div class="text-xs" style="color:var(--muted)">reply rate</div>
+              </div>
+              <div class="p-3 rounded-xl" style="background:var(--paper-2)">
+                <div class="font-display text-2xl">12</div>
+                <div class="text-xs" style="color:var(--muted)">meetings</div>
+              </div>
+              <div class="p-3 rounded-xl" style="background:var(--paper-2)">
+                <div class="font-display text-2xl">99<span class="text-base align-top" style="color:var(--violet)">%</span></div>
+                <div class="text-xs" style="color:var(--muted)">inbox health</div>
+              </div>
+            </div>
+            <!-- NOTE: illustrative figures in the hero mockup, not a client metric -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================  PROOF STRIP (real clients — moving carousel)  ==================== -->
+    <section class="pb-6">
+      <div class="container">
+        <!-- Real client logos in a continuously-moving carousel, on the page
+             background. TRaViS only ships a white wordmark, so we render it as a
+             solid dark mark (brightness-0) to read on white. To add a client: drop
+             the logo in assets/clients/ and add a matching <img> to BOTH groups below
+             — the two groups must stay identical for the loop to be seamless. -->
+        <div class="reveal">
+          <p class="text-center text-xs font-semibold tracking-[0.16em] uppercase mb-8" style="color:var(--muted)">Trusted by teams like —</p>
+          <div class="marquee">
+            <!-- gap:0 + uniform right-margin on every logo keeps the two halves
+                 exactly equal, so the -50% loop is perfectly seamless. -->
+            <div class="marquee__track items-center" style="gap:0">
+              <!-- group A -->
+              <img src="assets/clients/travis-header.webp" alt="TRaViS — Next-gen External Attack Surface Management" class="h-7 w-auto object-contain shrink-0 mr-16 brightness-0" />
+              <img src="assets/clients/seron-security.webp" alt="Seron Security" class="h-9 w-auto object-contain shrink-0 mr-16" />
+              <img src="assets/clients/pce-solutions.png" alt="PCE Solutions" class="h-9 w-auto object-contain shrink-0 mr-16" />
+              <img src="assets/clients/travis-header.webp" alt="TRaViS" class="h-7 w-auto object-contain shrink-0 mr-16 brightness-0" aria-hidden="true" />
+              <img src="assets/clients/seron-security.webp" alt="" class="h-9 w-auto object-contain shrink-0 mr-16" aria-hidden="true" />
+              <img src="assets/clients/pce-solutions.png" alt="" class="h-9 w-auto object-contain shrink-0 mr-16" aria-hidden="true" />
+              <!-- group B (identical duplicate for seamless loop) -->
+              <img src="assets/clients/travis-header.webp" alt="" class="h-7 w-auto object-contain shrink-0 mr-16 brightness-0" aria-hidden="true" />
+              <img src="assets/clients/seron-security.webp" alt="" class="h-9 w-auto object-contain shrink-0 mr-16" aria-hidden="true" />
+              <img src="assets/clients/pce-solutions.png" alt="" class="h-9 w-auto object-contain shrink-0 mr-16" aria-hidden="true" />
+              <img src="assets/clients/travis-header.webp" alt="" class="h-7 w-auto object-contain shrink-0 mr-16 brightness-0" aria-hidden="true" />
+              <img src="assets/clients/seron-security.webp" alt="" class="h-9 w-auto object-contain shrink-0 mr-16" aria-hidden="true" />
+              <img src="assets/clients/pce-solutions.png" alt="" class="h-9 w-auto object-contain shrink-0 mr-16" aria-hidden="true" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================  THE PROBLEM  ==================== -->
+    <section class="section">
+      <div class="container grid lg:grid-cols-2 gap-14 items-end">
+        <div class="reveal">
+          <p class="eyebrow">The problem</p>
+          <h2 class="font-display text-[clamp(2rem,4.4vw,3.4rem)] mt-4">
+            Outbound isn't broken. The way most teams run it is.
+          </h2>
+        </div>
+        <p class="lede reveal" style="--reveal-delay:120ms">
+          Burned domains, generic templates, and SDRs blasting strangers who never asked to hear from you.
+          Activity goes up, replies go to spam, and the pipeline never shows. The fix isn't more volume —
+          it's a smarter signal.
+        </p>
+      </div>
+
+      <div class="container grid sm:grid-cols-3 gap-5 mt-14">
+        <div class="card card-hover reveal p-7">
+          <div class="font-display text-4xl gradient-text">73%</div>
+          <p class="mt-3" style="color:var(--muted)">of cold email never reaches the inbox when infrastructure is set up wrong.</p>
+          <!-- PLACEHOLDER STAT — industry framing, replace with cited source or remove -->
+        </div>
+        <div class="card card-hover reveal p-7" style="--reveal-delay:100ms">
+          <div class="font-display text-4xl gradient-text">1 in 50</div>
+          <p class="mt-3" style="color:var(--muted)">cold prospects is in-market today. The other 49 need a reason to talk to you.</p>
+          <!-- PLACEHOLDER STAT -->
+        </div>
+        <div class="card card-hover reveal p-7" style="--reveal-delay:200ms">
+          <div class="font-display text-4xl gradient-text">$120k+</div>
+          <p class="mt-3" style="color:var(--muted)">to build an in-house SDR seat that may take a quarter to ramp — if it works.</p>
+          <!-- PLACEHOLDER STAT -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================  SERVICES (the system)  ==================== -->
+    <section id="services" class="section" style="background:var(--paper-2)">
+      <div class="container">
+        <div class="text-center max-w-3xl mx-auto reveal">
+          <p class="eyebrow eyebrow--center justify-center">What we do</p>
+          <h2 class="font-display text-[clamp(2rem,4.8vw,3.6rem)] mt-4">Two ways we help you grow</h2>
+          <p class="font-display gradient-text mt-1" style="font-size:clamp(1.4rem,3vw,2.2rem); letter-spacing:-0.03em">outbound &amp; content</p>
+        </div>
+
+        <!-- two pipelines -->
+        <div class="grow-grid mt-14">
+          <!-- ============ OUTBOUND ============ -->
+          <article class="card reveal p-7 lg:p-9">
+            <h3 class="font-display text-2xl">Outbound</h3>
+            <p class="mt-3 text-sm max-w-sm" style="color:var(--muted)">We run personalized prospecting campaigns that reach 1,000+ of your ideal customers a day — flooding your calendar with qualified meetings.</p>
+
+            <div class="flow mt-8">
+              <!-- inputs merge -->
+              <div class="flow-merge"><div class="flow-row">
+                <span class="flow-node">Email Infra</span>
+                <span class="flow-node">ICP Matrix</span>
+                <span class="flow-node">TAM Scoping</span>
+              </div></div>
+              <div class="flow-conn"></div>
+
+              <span class="flow-node flow-node--lg">Company &amp; Contact Sourcing</span>
+              <div class="flow-icons">
+                <img class="flow-icon" src="assets/tools/apollo.png" alt="Apollo" title="Apollo" loading="lazy" />
+                <img class="flow-icon" src="assets/tools/clay.webp" alt="Clay" title="Clay" loading="lazy" />
+                <img class="flow-icon" src="assets/tools/aiark.jpg" alt="AI Ark" title="AI Ark" loading="lazy" />
+                <img class="flow-icon" src="assets/tools/million-verifier.png" alt="Million Verifier" title="Million Verifier" loading="lazy" />
+              </div>
+              <div class="flow-conn"></div>
+
+              <span class="flow-node flow-node--lg">Lead Scoring &amp; Tiering</span>
+              <div class="flow-conn"></div>
+
+              <span class="flow-node flow-node--lg">Personalized</span>
+              <div class="flow-conn"></div>
+
+              <span class="flow-node flow-node--lg flow-node--dark">Send</span>
+              <div class="flow-icons">
+                <img class="flow-icon" src="assets/tools/instantly.png" alt="Instantly" title="Instantly" loading="lazy" />
+                <img class="flow-icon" src="assets/tools/smartlead.jpg" alt="Smartlead" title="Smartlead" loading="lazy" />
+              </div>
+            </div>
+          </article>
+
+          <!-- ============ CONTENT ============ -->
+          <article class="card reveal p-7 lg:p-9" style="--reveal-delay:120ms">
+            <h3 class="font-display text-2xl">Content</h3>
+            <p class="mt-3 text-sm max-w-sm" style="color:var(--muted)">We publish high-performing organic content that educates your market and builds demand — so buyers arrive already warm.</p>
+
+            <div class="flow mt-8">
+              <!-- inputs merge -->
+              <div class="flow-merge"><div class="flow-row">
+                <span class="flow-node">ICP Research</span>
+                <span class="flow-node">Content Pillars</span>
+                <span class="flow-node">Brand Voice</span>
+              </div></div>
+              <div class="flow-conn"></div>
+
+              <span class="flow-node flow-node--lg">Content Ideation</span>
+              <div class="flow-conn"></div>
+
+              <span class="flow-node flow-node--lg">Content Writing</span>
+              <div class="flow-conn"></div>
+
+              <span class="flow-node flow-node--lg">Design</span>
+              <div class="flow-icons">
+                <img class="flow-icon" src="assets/tools/canva.png" alt="Canva" title="Canva" loading="lazy" />
+              </div>
+              <div class="flow-conn"></div>
+
+              <!-- branch into funnel stages -->
+              <div class="flow-branch"><div class="flow-row">
+                <div class="flow-col-mini">
+                  <span class="tier tier-1">TOF</span>
+                  <div class="flow-conn"></div>
+                  <span class="flow-node">Hot Takes</span>
+                </div>
+                <div class="flow-col-mini">
+                  <span class="tier tier-2">MOF</span>
+                  <div class="flow-conn"></div>
+                  <span class="flow-node">How-To's</span>
+                </div>
+                <div class="flow-col-mini">
+                  <span class="tier tier-3">BOF</span>
+                  <div class="flow-conn"></div>
+                  <span class="flow-node">Case Studies</span>
+                </div>
+              </div></div>
+              <div class="flow-conn"></div>
+              <span class="flow-node flow-node--dark flow-node--lg">LinkedIn Posts</span>
+            </div>
+          </article>
+        </div>
+
+        <!-- shared funnel: both pipelines lead here -->
+        <div class="flow flow-funnel mt-2 reveal">
+          <div class="flow-conn" style="height:34px"></div>
+          <span class="flow-node flow-node--lg">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--violet-700)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2.5"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            Meeting Booked
+          </span>
+          <div class="flow-conn"></div>
+          <span class="flow-node flow-node--lg">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--violet-700)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM22 21v-2a4 4 0 0 0-3-3.87M16 3.13A4 4 0 0 1 16 11"/></svg>
+            Sales Process
+          </span>
+          <div class="flow-conn"></div>
+          <span class="flow-node flow-node--lg flow-node--dark">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--lavender)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+            Closed Won
+          </span>
+        </div>
+
+        <!-- book a call -->
+        <div class="reveal mt-12 flex justify-center">
+          <!-- FILL THIS IN: booking link -->
+          <a href="https://calendly.com/contact-apexpipelinesystems/discovery-call-with-deangelo-clone" class="btn btn-primary" data-magnetic>
+            Book a call
+            <span class="btn-arrow" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================  PROCESS TIMELINE (dark band)  ==================== -->
+    <section id="process" class="section band-dark">
+      <span class="glow" style="width:360px;height:360px;background:var(--violet-700);top:-80px;left:10%"></span>
+      <span class="glow" style="width:300px;height:300px;background:var(--lavender);bottom:-60px;right:5%"></span>
+      <div class="container relative">
+        <div class="max-w-2xl reveal">
+          <p class="eyebrow" style="color:var(--lavender)"><span style="background:var(--lavender)"></span>The method</p>
+          <h2 class="font-display text-[clamp(2rem,4.6vw,3.6rem)] mt-4">How we de-risk the build.</h2>
+          <p class="lede mt-5">A 90-day path from cold start to compounding pipeline — with something to show at every step.</p>
+        </div>
+
+        <ol class="mt-14 grid gap-px">
+          <li class="reveal relative grid md:grid-cols-[180px_1fr] gap-5 md:gap-10 py-8" style="border-top:1px solid var(--line-dk)">
+            <div>
+              <span class="text-xs font-semibold tracking-widest uppercase" style="color:var(--lavender)">Week 1–2</span>
+              <div class="font-display text-2xl mt-1">Setup</div>
+            </div>
+            <p style="color:var(--muted-dk)">We stand up infrastructure — domains, inboxes, warmup, enrichment and your ICP data model — and lock your messaging and offer. Foundations that keep you in the inbox.</p>
+          </li>
+          <li class="reveal relative grid md:grid-cols-[180px_1fr] gap-5 md:gap-10 py-8" style="border-top:1px solid var(--line-dk); --reveal-delay:100ms">
+            <div>
+              <span class="text-xs font-semibold tracking-widest uppercase" style="color:var(--lavender)">Week 3–4</span>
+              <div class="font-display text-2xl mt-1">Launch</div>
+            </div>
+            <p style="color:var(--muted-dk)">First campaigns go live. Personalized emails land in the inbox, replies start, and the first meetings hit your calendar. You see real signal within weeks, not quarters.</p>
+          </li>
+          <li class="reveal relative grid md:grid-cols-[180px_1fr] gap-5 md:gap-10 py-8" style="border-top:1px solid var(--line-dk); --reveal-delay:200ms">
+            <div>
+              <span class="text-xs font-semibold tracking-widest uppercase" style="color:var(--lavender)">Month 2</span>
+              <div class="font-display text-2xl mt-1">Optimize</div>
+            </div>
+            <p style="color:var(--muted-dk)">We read the data and tighten everything — targeting, messaging, sequencing and booking flow — turning early signal into a repeatable, predictable motion.</p>
+          </li>
+          <li class="reveal relative grid md:grid-cols-[180px_1fr] gap-5 md:gap-10 py-8" style="border-top:1px solid var(--line-dk); border-bottom:1px solid var(--line-dk); --reveal-delay:300ms">
+            <div>
+              <span class="text-xs font-semibold tracking-widest uppercase" style="color:var(--lavender)">Month 3+</span>
+              <div class="font-display text-2xl mt-1">Scale</div>
+            </div>
+            <p style="color:var(--muted-dk)">With a proven engine, we add volume, domains and segments — scaling pipeline without scaling headcount, and without burning your reputation.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ====================  RESULTS / STATS (dark)  ==================== -->
+    <section id="results" class="section band-dark" style="background:var(--ink-2)">
+      <span class="glow" style="width:340px;height:340px;background:var(--violet-700);top:-60px;right:8%"></span>
+      <div class="container relative">
+        <div class="text-center max-w-2xl mx-auto reveal">
+          <p class="eyebrow eyebrow--center justify-center" style="color:var(--lavender)">Run the numbers</p>
+          <h2 class="font-display text-[clamp(2rem,4.6vw,3.4rem)] mt-4">Your market is bigger than you think.</h2>
+          <p class="lede mt-5">Plug in industry-average benchmarks and the math speaks for itself. Here's what a typical month looks like for a B2B team running our engine.</p>
+        </div>
+
+        <!-- ============================================================
+             ILLUSTRATIVE MODEL — industry-average benchmarks, NOT client
+             results. Tune these numbers to taste; all are editable.
+             ============================================================ -->
+
+        <!-- TAM callout -->
+        <div class="reveal mt-12 text-center">
+          <div class="inline-flex flex-col items-center px-8 sm:px-12 py-7 rounded-[var(--radius-lg)]" style="border:1px solid var(--line-dk); background:rgba(255,255,255,0.03)">
+            <span class="text-xs font-semibold tracking-[0.18em] uppercase" style="color:var(--lavender)">Your total addressable market</span>
+            <div class="font-display text-[clamp(3rem,9vw,5.5rem)] mt-1"><span data-count="20000" data-suffix="+">0</span></div>
+            <p class="text-sm max-w-md" style="color:var(--muted-dk)">ideal-fit prospects — and most B2B markets are far bigger than founders assume.</p>
+          </div>
+        </div>
+
+        <!-- the funnel -->
+        <div class="num-funnel reveal mt-12" style="--reveal-delay:100ms">
+          <div class="num-step">
+            <div class="font-display text-[clamp(2rem,4.4vw,3rem)]"><span data-count="55000">0</span></div>
+            <p class="text-sm font-medium mt-1">emails sent / month</p>
+            <span class="num-tag">2,500 a day</span>
+          </div>
+          <span class="num-arrow" aria-hidden="true">→</span>
+          <div class="num-step">
+            <div class="font-display text-[clamp(2rem,4.4vw,3rem)]"><span data-count="1100">0</span></div>
+            <p class="text-sm font-medium mt-1">replies / month</p>
+            <span class="num-tag">≈ 2% reply rate</span>
+          </div>
+          <span class="num-arrow" aria-hidden="true">→</span>
+          <div class="num-step">
+            <div class="font-display text-[clamp(2rem,4.4vw,3rem)]"><span data-count="220">0</span></div>
+            <p class="text-sm font-medium mt-1">interested leads</p>
+            <span class="num-tag">≈ 1 in 5 replies</span>
+          </div>
+          <span class="num-arrow" aria-hidden="true">→</span>
+          <div class="num-step num-step--hot">
+            <div class="font-display text-[clamp(2rem,4.4vw,3rem)]"><span data-count="35">0</span></div>
+            <p class="text-sm font-medium mt-1">meetings booked</p>
+            <span class="num-tag">straight to your calendar</span>
+          </div>
+        </div>
+
+        <p class="reveal text-center mt-8" style="color:var(--muted-dk)">
+          And even at a conservative <strong style="color:#fff">1% reply rate</strong>, that's still
+          <strong style="color:#fff">550 conversations a month</strong> — your pipeline only scales from there.
         </p>
 
-        <div class="hero-actions fu d3">
-          <a
-            href="https://www.youtube.com/@Apexpipelinepodcast?sub_confirmation=1"
-            target="_blank" rel="noopener"
-            class="btn btn-primary btn-lg"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.19a3.02 3.02 0 00-2.12-2.14C19.54 3.5 12 3.5 12 3.5s-7.54 0-9.38.55A3.02 3.02 0 00.5 6.19C0 8.04 0 12 0 12s0 3.96.5 5.81a3.02 3.02 0 002.12 2.14C4.46 20.5 12 20.5 12 20.5s7.54 0 9.38-.55a3.02 3.02 0 002.12-2.14C24 15.96 24 12 24 12s0-3.96-.5-5.81zM9.75 15.52V8.48L15.5 12l-5.75 3.52z"/></svg>
-            Subscribe on YouTube
-          </a>
-          <a href="#episodes" class="btn btn-ghost btn-lg">
-            Watch Episodes
-            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </a>
-        </div>
+        <p class="reveal text-center text-xs mt-8 max-w-2xl mx-auto" style="color:var(--muted-dk)">
+          * Illustrative model based on industry-average outbound benchmarks — not guaranteed results.
+          Your actual numbers depend on your offer, ICP and market. We'll build your real projection on a call.
+        </p>
+      </div>
+    </section>
 
-        <div class="hero-stats fu d4">
-          <div class="stat-item">
-            <div class="stat-num grad-text">15+</div>
-            <div class="stat-lbl">Episodes live</div>
+    <!-- ====================  FREE MARKET MAP OFFER (book a call)  ==================== -->
+    <section class="section" style="background:var(--paper-2)">
+      <div class="container">
+        <div class="card reveal overflow-hidden" style="border-radius:var(--radius-lg)">
+          <div class="grid lg:grid-cols-[1.05fr_0.95fr]">
+            <!-- offer + CTA -->
+            <div class="p-8 lg:p-12 flex flex-col justify-center">
+              <p class="eyebrow">Free — before you spend a dollar</p>
+              <h2 class="font-display text-[clamp(2rem,4.2vw,3.1rem)] mt-4">Book a call and we'll map your market — free.</h2>
+              <p class="lede mt-5">No fee. No pitch. Just a clear picture of the opportunity in front of you — built for your business and ready the moment you hop on the call.</p>
+              <div class="mt-8 flex flex-wrap gap-3">
+                <!-- FILL THIS IN: booking link -->
+                <a href="https://calendly.com/contact-apexpipelinesystems/discovery-call-with-deangelo-clone" class="btn btn-primary" data-magnetic>
+                  Book your free call
+                  <span class="btn-arrow" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                </a>
+                <a href="#quote" class="btn btn-ghost">Or get a quote</a>
+              </div>
+            </div>
+
+            <!-- what you get -->
+            <div class="relative band-dark p-8 lg:p-12 flex flex-col justify-center">
+              <span class="glow" style="width:260px;height:260px;background:var(--violet);bottom:-60px;right:-40px"></span>
+              <div class="relative">
+                <p class="eyebrow" style="color:var(--lavender)"><span style="background:var(--lavender)"></span>What you walk away with</p>
+                <ul class="mt-6 grid gap-4">
+                  <li class="flex items-start gap-3">
+                    <span class="flex-none mt-0.5 w-6 h-6 rounded-full flex items-center justify-center" style="background:var(--grad-brand)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span>
+                    <span><strong class="font-display">Your total addressable market, mapped.</strong><br/><span class="text-sm" style="color:var(--muted-dk)">Exactly how many ideal-fit prospects are out there for you to reach.</span></span>
+                  </li>
+                  <li class="flex items-start gap-3">
+                    <span class="flex-none mt-0.5 w-6 h-6 rounded-full flex items-center justify-center" style="background:var(--grad-brand)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span>
+                    <span><strong class="font-display">Your ICP, segmented.</strong><br/><span class="text-sm" style="color:var(--muted-dk)">Broken into clear tiers so you know exactly who to go after first.</span></span>
+                  </li>
+                  <li class="flex items-start gap-3">
+                    <span class="flex-none mt-0.5 w-6 h-6 rounded-full flex items-center justify-center" style="background:var(--grad-brand)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span>
+                    <span><strong class="font-display">A real outbound projection.</strong><br/><span class="text-sm" style="color:var(--muted-dk)">The actual numbers for your business — yours to keep, no strings.</span></span>
+                  </li>
+                </ul>
+                <p class="mt-7 text-sm" style="color:var(--muted-dk)">No fee. No pitch. We'll have it ready when you book.</p>
+              </div>
+            </div>
           </div>
-          <div class="stat-item">
-            <div class="stat-num grad-text">100%</div>
-            <div class="stat-lbl">Founder-led insights</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================  DIFFERENTIATORS + FOUNDER  ==================== -->
+    <section class="section">
+      <div class="container grid lg:grid-cols-[1fr_0.8fr] gap-14 items-start">
+        <div>
+          <div class="reveal">
+            <p class="eyebrow">Why SalesSignalIQ</p>
+            <h2 class="font-display text-[clamp(2rem,4.4vw,3.2rem)] mt-4">Not another lead-gen vendor.</h2>
           </div>
-          <div class="stat-item">
-            <div class="stat-num grad-text">Free</div>
-            <div class="stat-lbl">On YouTube</div>
+          <div class="grid sm:grid-cols-2 gap-5 mt-10">
+            <div class="reveal">
+              <div class="text-2xl">🎯</div>
+              <h4 class="font-display text-lg mt-3">Personalized at scale</h4>
+              <p class="text-sm mt-2" style="color:var(--muted)">Every send is researched and relevant — powered by Clay, never copy-paste.</p>
+            </div>
+            <div class="reveal" style="--reveal-delay:80ms">
+              <div class="text-2xl">📊</div>
+              <h4 class="font-display text-lg mt-3">Transparent reporting</h4>
+              <p class="text-sm mt-2" style="color:var(--muted)">You see exactly who we contact and what's working — no black box.</p>
+            </div>
+            <div class="reveal" style="--reveal-delay:160ms">
+              <div class="text-2xl">🧠</div>
+              <h4 class="font-display text-lg mt-3">Operator-led</h4>
+              <p class="text-sm mt-2" style="color:var(--muted)">Senior operators run your account — never handed to a junior.</p>
+            </div>
+            <div class="reveal" style="--reveal-delay:240ms">
+              <div class="text-2xl">🛡️</div>
+              <h4 class="font-display text-lg mt-3">Deliverability-first</h4>
+              <p class="text-sm mt-2" style="color:var(--muted)">Your domain reputation is treated as the asset it is.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- founder -->
+        <aside class="card reveal overflow-hidden" style="--reveal-delay:120ms; border-radius:var(--radius-lg)">
+          <img src="assets/founder.png" alt="Deangelo, founder of SalesSignalIQ" class="w-full aspect-[4/5] object-cover object-top" loading="lazy" width="1024" height="1024" />
+          <div class="p-7">
+            <p class="eyebrow">Founder-led</p>
+            <h3 class="font-display text-xl mt-3">Built and run by an operator.</h3>
+            <p class="text-sm mt-3" style="color:var(--muted)">
+              SalesSignalIQ is led by Deangelo — hands-on with strategy and execution, not a sales rep who
+              disappears after you sign.
+            </p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ====================  QUOTE FLOW (centerpiece)  ==================== -->
+    <section id="quote" class="section" style="background:var(--paper-2)">
+      <div class="container" style="max-width:760px">
+        <div class="text-center reveal">
+          <p class="eyebrow eyebrow--center justify-center">Get your custom quote</p>
+          <h2 class="font-display text-[clamp(2rem,4.6vw,3.4rem)] mt-4">Tell us where you are. We'll scope the engine.</h2>
+          <p class="lede mt-5 mx-auto max-w-lg">Four quick questions — no commitment. We'll come back with a tailored plan and pricing.</p>
+        </div>
+
+        <div class="card reveal mt-10 p-7 lg:p-10" style="border-radius:var(--radius-lg)">
+          <!-- success state -->
+          <div id="quote-success" hidden tabindex="-1" class="text-center py-8">
+            <div class="mx-auto mb-5 w-16 h-16 rounded-full flex items-center justify-center" style="background:var(--grad-brand)">
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+            </div>
+            <h3 class="font-display text-2xl">Request received.</h3>
+            <p class="mt-3" style="color:var(--muted)">We'll review your outbound situation and reply within one business day with a tailored quote. Want to move faster?</p>
+            <!-- FILL THIS IN: booking link -->
+            <a href="https://calendly.com/contact-apexpipelinesystems/discovery-call-with-deangelo-clone" class="btn btn-primary mt-6" data-magnetic>Book a call now</a>
+          </div>
+
+          <form id="quote-form" class="form-body" novalidate>
+            <!-- Web3Forms spam honeypot — bots tick it, humans never see it -->
+            <input type="checkbox" name="botcheck" tabindex="-1" aria-hidden="true" style="display:none" />
+            <div class="flex items-center justify-between mb-2 text-sm">
+              <span data-step-label style="color:var(--muted)">Step 1 of 4</span>
+              <span style="color:var(--muted)">~60 seconds</span>
+            </div>
+            <div class="progress-track mb-8"><div class="progress-fill" style="width:25%"></div></div>
+
+            <!-- STEP 1 — company / role -->
+            <fieldset class="form-step is-active" aria-label="About you">
+              <legend class="font-display text-xl mb-5">First, the basics.</legend>
+              <div class="grid sm:grid-cols-2 gap-5">
+                <div>
+                  <label class="field-label" for="q-name">Your name</label>
+                  <input class="field-input" id="q-name" name="name" required autocomplete="name" />
+                  <span class="field-error-msg">Please enter your name.</span>
+                </div>
+                <div>
+                  <label class="field-label" for="q-company">Company</label>
+                  <input class="field-input" id="q-company" name="company" required autocomplete="organization" />
+                  <span class="field-error-msg">Please enter your company.</span>
+                </div>
+              </div>
+              <div class="mt-5">
+                <label class="field-label" for="q-role">Your role</label>
+                <input class="field-input" id="q-role" name="role" required placeholder="e.g. Founder, Head of Sales" />
+                <span class="field-error-msg">Please enter your role.</span>
+              </div>
+              <div class="flex justify-end mt-8">
+                <button type="button" class="btn btn-primary" data-next data-magnetic>Continue</button>
+              </div>
+            </fieldset>
+
+            <!-- STEP 2 — what they sell + ICP -->
+            <fieldset class="form-step" aria-label="What you sell">
+              <legend class="font-display text-xl mb-5">What do you sell, and to whom?</legend>
+              <div>
+                <label class="field-label" for="q-offer">Your offer</label>
+                <input class="field-input" id="q-offer" name="offer" required placeholder="What you sell, in one line" />
+                <span class="field-error-msg">Please describe your offer.</span>
+              </div>
+              <div class="mt-5">
+                <label class="field-label" for="q-icp">Your ideal customer (ICP)</label>
+                <textarea class="field-textarea" id="q-icp" name="icp" rows="3" required placeholder="Industry, company size, titles you sell to"></textarea>
+                <span class="field-error-msg">Please describe your ICP.</span>
+              </div>
+              <div class="flex justify-between mt-8">
+                <button type="button" class="btn btn-ghost" data-prev>Back</button>
+                <button type="button" class="btn btn-primary" data-next data-magnetic>Continue</button>
+              </div>
+            </fieldset>
+
+            <!-- STEP 3 — current outbound situation -->
+            <fieldset class="form-step" aria-label="Current outbound">
+              <legend class="font-display text-xl mb-5">Where's your outbound today?</legend>
+              <div class="grid gap-3" role="radiogroup" aria-label="Current outbound situation">
+                <label class="opt-card"><input type="radio" name="situation" value="nothing" required /> <span>Not doing outbound yet</span></label>
+                <label class="opt-card"><input type="radio" name="situation" value="diy" /> <span>Running it in-house, want better results</span></label>
+                <label class="opt-card"><input type="radio" name="situation" value="agency" /> <span>With another agency, considering a switch</span></label>
+                <label class="opt-card"><input type="radio" name="situation" value="scaling" /> <span>Working — want to scale it</span></label>
+              </div>
+              <div class="mt-5">
+                <label class="field-label" for="q-budget">Monthly budget range <span style="color:var(--muted); font-weight:400">(optional)</span></label>
+                <select class="field-input" id="q-budget" name="budget">
+                  <option value="">Select a range…</option>
+                  <option>Under $2k / mo</option>
+                  <option>$2k–$5k / mo</option>
+                  <option>$5k–$10k / mo</option>
+                  <option>$10k+ / mo</option>
+                </select>
+              </div>
+              <div class="flex justify-between mt-8">
+                <button type="button" class="btn btn-ghost" data-prev>Back</button>
+                <button type="button" class="btn btn-primary" data-next data-magnetic>Continue</button>
+              </div>
+            </fieldset>
+
+            <!-- STEP 4 — contact + book -->
+            <fieldset class="form-step" aria-label="Contact details">
+              <legend class="font-display text-xl mb-5">Where should we send your quote?</legend>
+              <div class="grid sm:grid-cols-2 gap-5">
+                <div>
+                  <label class="field-label" for="q-email">Work email</label>
+                  <input class="field-input" id="q-email" name="email" type="email" required autocomplete="email" />
+                  <span class="field-error-msg">Please enter a valid email.</span>
+                </div>
+                <div>
+                  <label class="field-label" for="q-website">Website <span style="color:var(--muted); font-weight:400">(optional)</span></label>
+                  <input class="field-input" id="q-website" name="website" autocomplete="url" placeholder="yourcompany.com" />
+                </div>
+              </div>
+              <div class="flex flex-col sm:flex-row justify-between gap-3 mt-8">
+                <button type="button" class="btn btn-ghost" data-prev>Back</button>
+                <button type="submit" class="btn btn-primary" data-magnetic>Get my quote →</button>
+              </div>
+              <p id="quote-error" hidden role="alert" class="mt-5 text-sm text-center" style="color:#d23b5b">
+                Something went wrong sending your request. Please email us directly at
+                <a href="mailto:contact@apexpipelinesystems.co" style="text-decoration:underline">contact@apexpipelinesystems.co</a>.
+              </p>
+            </fieldset>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================  FAQ  ==================== -->
+    <section id="faq" class="section">
+      <div class="container grid lg:grid-cols-[0.8fr_1.2fr] gap-12">
+        <div class="reveal">
+          <p class="eyebrow">FAQ</p>
+          <h2 class="font-display text-[clamp(2rem,4.4vw,3.2rem)] mt-4">The questions serious buyers ask.</h2>
+          <p class="lede mt-5">Don't see yours? <a href="#quote" style="color:var(--violet-700); font-weight:500">Ask us in the quote form.</a></p>
+        </div>
+
+        <div data-accordion class="reveal">
+          <div class="accordion-item">
+            <button class="accordion-trigger" aria-expanded="false" aria-controls="faq-1" id="faq-t-1">
+              Will this hurt my domain or deliverability?
+              <span class="accordion-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+            </button>
+            <div class="accordion-panel" id="faq-1" role="region" aria-labelledby="faq-t-1"><div>
+              The opposite. We send from dedicated domains and inboxes — never your primary domain — with proper
+              warmup, SPF/DKIM/DMARC, and conservative volume. Protecting your sending reputation is the first
+              thing we build, not an afterthought.
+            </div></div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-trigger" aria-expanded="false" aria-controls="faq-2" id="faq-t-2">
+              How fast until we see results?
+              <span class="accordion-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+            </button>
+            <div class="accordion-panel" id="faq-2" role="region" aria-labelledby="faq-t-2"><div>
+              Infrastructure and warmup take the first couple of weeks, with campaigns live by weeks 3–4. Most
+              partners see their first warm conversations within the first month and a predictable rhythm by month two.
+            </div></div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-trigger" aria-expanded="false" aria-controls="faq-3" id="faq-t-3">
+              How does pricing and commitment work?
+              <span class="accordion-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+            </button>
+            <div class="accordion-panel" id="faq-3" role="region" aria-labelledby="faq-t-3"><div>
+              Pricing is scoped to your ICP, volume and goals — that's what the quote form is for. We keep terms
+              straightforward and aligned to outcomes; the exact structure is laid out transparently before you commit.
+            </div></div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-trigger" aria-expanded="false" aria-controls="faq-4" id="faq-t-4">
+              Will I know who you're contacting on my behalf?
+              <span class="accordion-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+            </button>
+            <div class="accordion-panel" id="faq-4" role="region" aria-labelledby="faq-t-4"><div>
+              Always. You approve the ICP and messaging up front, and you get full visibility into target lists,
+              live campaigns and results. No black box — it's your brand and your pipeline.
+            </div></div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-trigger" aria-expanded="false" aria-controls="faq-5" id="faq-t-5">
+              Do I need to hire SDRs to make this work?
+              <span class="accordion-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+            </button>
+            <div class="accordion-panel" id="faq-5" role="region" aria-labelledby="faq-t-5"><div>
+              No. That's the point — we are the engine. From list to inbox to booked meeting, our team runs it.
+              You show up to qualified conversations on your calendar.
+            </div></div>
           </div>
         </div>
       </div>
+    </section>
 
-      <!-- Photo -->
-      <div class="hero-photo-panel fu d2">
-        <div class="photo-orb"></div>
-        <div class="hero-photo-frame">
-          <img
-            src="mjc1spt1sia69ilpzsoflsqf.png"
-            alt="DeAngelo — Host, Apex Pipeline Podcast"
-          >
-          <div class="hero-photo-caption">
-            <strong>DeAngelo</strong>
-            <span>Host &amp; Founder · Apex Pipeline Systems</span>
-          </div>
-        </div>
-        <div class="hero-float">
-          <div class="f-num">15+</div>
-          <div class="f-lbl">Episodes &amp; counting</div>
+    <!-- ====================  FINAL CTA (dark band)  ==================== -->
+    <section class="section band-dark text-center">
+      <span class="glow" style="width:420px;height:420px;background:var(--violet);top:50%;left:50%;transform:translate(-50%,-50%)"></span>
+      <div class="container relative reveal">
+        <h2 class="font-display text-[clamp(2.2rem,5.4vw,4rem)] max-w-3xl mx-auto">Ready to turn cold inboxes into booked pipeline?</h2>
+        <p class="lede mt-6 max-w-xl mx-auto">Book a call and we'll map your outbound engine — or get a custom quote in 60 seconds.</p>
+        <div class="mt-9 flex flex-wrap items-center justify-center gap-3.5">
+          <!-- FILL THIS IN: booking link -->
+          <a href="https://calendly.com/contact-apexpipelinesystems/discovery-call-with-deangelo-clone" class="btn btn-primary" data-magnetic>Book a call</a>
+          <a href="#quote" class="btn btn-ghost on-dark">Get a quote</a>
         </div>
       </div>
+    </section>
 
-    </div>
-  </div>
-</section>
+  </main>
 
-
-<!-- ═══════════════════════════════
-     PLATFORM STRIP
-═══════════════════════════════ -->
-<hr class="hr">
-<div class="platform-strip">
-  <div class="container">
-    <div class="platform-inner">
-      <span class="platform-label">Listen &amp; watch on</span>
-      <div class="platform-logos">
-        <span>YouTube</span>
-      </div>
-    </div>
-  </div>
-</div>
-<hr class="hr">
-
-
-<!-- ═══════════════════════════════
-     EPISODES
-═══════════════════════════════ -->
-<section id="episodes">
-  <div class="container">
-
-    <div class="episodes-header fu">
-      <div>
-        <span class="section-label">All Episodes</span>
-        <h2 class="episodes-h2">Latest Episodes</h2>
-      </div>
-      <a
-        href="https://www.youtube.com/@Apexpipelinepodcast"
-        target="_blank" rel="noopener"
-        class="btn btn-ghost"
-      >
-        View all on YouTube
-        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </a>
-    </div>
-
-    <div class="ep-grid" id="epGrid"></div>
-
-    <div class="episodes-more">
-      <a
-        href="https://www.youtube.com/@Apexpipelinepodcast"
-        target="_blank" rel="noopener"
-        class="btn btn-ghost btn-lg"
-      >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.19a3.02 3.02 0 00-2.12-2.14C19.54 3.5 12 3.5 12 3.5s-7.54 0-9.38.55A3.02 3.02 0 00.5 6.19C0 8.04 0 12 0 12s0 3.96.5 5.81a3.02 3.02 0 002.12 2.14C4.46 20.5 12 20.5 12 20.5s7.54 0 9.38-.55a3.02 3.02 0 002.12-2.14C24 15.96 24 12 24 12s0-3.96-.5-5.81zM9.75 15.52V8.48L15.5 12l-5.75 3.52z"/></svg>
-        Watch All Episodes on YouTube
-      </a>
-    </div>
-
-  </div>
-</section>
-
-
-<!-- ═══════════════════════════════
-     SUBSCRIBE CTA
-═══════════════════════════════ -->
-<section id="subscribe">
-  <div class="container">
-    <div class="cta-eyebrow">
-      <div class="pill" style="display:inline-flex;">
-        <div class="pill-dot"></div>
-        New Episodes Every Week
-      </div>
-    </div>
-    <h2 class="cta-h2 fu">
-      Never Miss an<br>
-      <span class="grad-text">Episode</span>
-    </h2>
-    <p class="cta-sub fu d1">
-      Subscribe for weekly conversations with top founders on sales strategy, client acquisition, and building businesses that scale.
-    </p>
-    <div class="cta-actions fu d2">
-      <a
-        href="https://www.youtube.com/@Apexpipelinepodcast?sub_confirmation=1"
-        target="_blank" rel="noopener"
-        class="btn btn-primary btn-lg"
-      >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.19a3.02 3.02 0 00-2.12-2.14C19.54 3.5 12 3.5 12 3.5s-7.54 0-9.38.55A3.02 3.02 0 00.5 6.19C0 8.04 0 12 0 12s0 3.96.5 5.81a3.02 3.02 0 002.12 2.14C4.46 20.5 12 20.5 12 20.5s7.54 0 9.38-.55a3.02 3.02 0 002.12-2.14C24 15.96 24 12 24 12s0-3.96-.5-5.81zM9.75 15.52V8.48L15.5 12l-5.75 3.52z"/></svg>
-        Subscribe on YouTube
-      </a>
-      <a
-        href="https://www.youtube.com/@Apexpipelinepodcast"
-        target="_blank" rel="noopener"
-        class="btn btn-ghost btn-lg"
-      >
-        Visit Channel
-      </a>
-    </div>
-  </div>
-</section>
-
-
-<!-- ═══════════════════════════════
-     FOOTER
-═══════════════════════════════ -->
-<hr class="hr">
-<footer>
-  <div class="container">
-    <div class="footer-row">
-      <a href="#hero" class="nav-logo" style="text-decoration:none;">
-        <img src="brand assets/ChatGPT Image Mar 29, 2026, 06_20_45 PM.png" alt="Apex Pipeline Systems" class="nav-logo-img">
-        <div class="nav-logo-copy">
-          Apex Pipeline
-          <em>Podcast</em>
+  <!-- ====================  FOOTER  ==================== -->
+  <footer class="band-dark pt-16 pb-10" style="background:var(--ink)">
+    <div class="container">
+      <div class="grid md:grid-cols-[1.4fr_1fr_1fr] gap-10 pb-12">
+        <div>
+          <img src="assets/logo.png" alt="SalesSignalIQ" class="h-9 w-auto mb-4" width="160" height="40" style="filter:brightness(0) invert(1)" />
+          <p class="text-sm max-w-xs" style="color:var(--muted-dk)">Predictable B2B pipeline from done-for-you cold email outbound. Built for founders and sales leaders.</p>
         </div>
-      </a>
-      <div class="footer-links">
-        <a href="#episodes">Episodes</a>
-        <a href="services.html">Services</a>
-        <a href="https://www.youtube.com/@Apexpipelinepodcast" target="_blank" rel="noopener">YouTube</a>
-        <a href="https://www.linkedin.com/in/deangelo-satcher-35061a24b/" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:5px;">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-          LinkedIn
-        </a>
-        <a href="#subscribe">Subscribe</a>
+        <div>
+          <h4 class="text-sm font-semibold mb-4">Explore</h4>
+          <ul class="grid gap-2.5 text-sm">
+            <li><a class="footer-link" href="#services">Services</a></li>
+            <li><a class="footer-link" href="#process">Process</a></li>
+            <li><a class="footer-link" href="/results.html">Results</a></li>
+            <li><a class="footer-link" href="#faq">FAQ</a></li>
+            <li><a class="footer-link" href="#quote">Get a quote</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-sm font-semibold mb-4">Connect</h4>
+          <ul class="grid gap-2.5 text-sm">
+            <!-- FILL THIS IN: social + contact -->
+            <li><a class="footer-link" href="https://linkedin.com/company/REPLACE">LinkedIn</a></li>
+            <li><a class="footer-link" href="https://x.com/REPLACE">X (Twitter)</a></li>
+            <li><a class="footer-link" href="mailto:contact@apexpipelinesystems.co">contact@apexpipelinesystems.co</a></li>
+          </ul>
+        </div>
       </div>
-      <div class="footer-copy">&copy; 2026 Apex Pipeline Systems. All rights reserved.</div>
-    </div>
-  </div>
-</footer>
-
-
-<!-- ═══════════════════════════════════════════════════════
-     EPISODE DATA
-     ─────────────────────────────────────────────────────
-     To update: edit the EPISODES array below.
-     • videoId  = YouTube video ID (from youtube.com/watch?v=ID)
-     • title    = episode title shown on card
-     • guest    = guest name / role
-     • tag      = short category badge
-
-     Thumbnails load automatically from YouTube's CDN.
-     You can also drop a custom thumbnail image into brand assets/
-     and set  thumb: 'brand assets/your-image.jpg'  on any entry
-     to override the YouTube thumbnail.
-══════════════════════════════════════════════════════ -->
-<script>
-const EPISODES = [
-  {
-    videoId: 'k9j-NPNXHZs',
-    title: 'The MSP Sales Process Most Founders Get Completely Wrong',
-    guest: 'Brian Strong',
-    tag: 'Sales'
-  },
-  {
-    videoId: 'JjX3A05Cb78',
-    title: 'How Michael Hughes Runs Cybersecurity Across Healthcare Facilities 5 Hours Apart',
-    guest: 'Michael Hughes',
-    tag: 'Healthcare'
-  },
-  {
-    videoId: 'a6FX4uvh2v8',
-    title: 'How Justin Esgar Built an Apple-Only MSP, a 12-Year Conference, and 3 Acquisitions from Networking',
-    guest: 'Justin Esgar',
-    tag: 'MSP'
-  },
-  {
-    videoId: 't4_tUo1R79w',
-    title: 'How Acrivos Built a Healthcare MSP That Onboards a New Client Every Month',
-    guest: 'Acrivos',
-    tag: 'Healthcare'
-  },
-  {
-    videoId: 'dXuahZHjSns',
-    title: 'The Man Behind McAfee\'s $200M MSSP Channel on Why Most AI Vendors Are Lying',
-    guest: 'Norman Currie',
-    tag: 'AI & MSSP'
-  },
-  {
-    videoId: 'rYdjbS5wvxA',
-    title: 'This Cybersecurity CEO Breaks AI for a Living',
-    guest: 'Eric Vanderburg',
-    tag: 'Cybersecurity'
-  },
-  {
-    videoId: 'IMwliTso7ko',
-    title: 'From Kansas to the Largest CPA MSP in North America',
-    guest: 'Randy Johnston',
-    tag: 'MSP'
-  },
-  {
-    videoId: 'D5hQfIlW2GE',
-    title: 'Cyber Insurance Only Paid 44% of Claims Last Year — Now What?',
-    guest: 'James Oliverio',
-    tag: 'Cybersecurity'
-  },
-  {
-    videoId: 'Bz8mJH_0M6M',
-    title: 'The PBM Scam: How 3 Companies Control 80% of Your Pharmacy',
-    guest: 'Guest Interview',
-    tag: 'Healthcare'
-  },
-  {
-    videoId: 'y0XqbssAke4',
-    title: '25 Years in IT: What Most MSPs Are Getting Wrong',
-    guest: 'Jason Romer',
-    tag: 'MSP'
-  },
-  {
-    videoId: 'Lo_xJcsKYzg',
-    title: 'Why Most Small Businesses Are NOT Ready for a Cyber Attack',
-    guest: 'Aaron Birnbaum',
-    tag: 'Cybersecurity'
-  },
-  {
-    videoId: 'QM6Y-PRzyY4',
-    title: 'How a Small Consulting Firm Lands Fortune 1000 Clients',
-    guest: 'Trevor Wragg',
-    tag: 'Sales'
-  },
-  {
-    videoId: 'UibfIJba7vc',
-    title: 'Why Most MSPs Are Using AI Wrong',
-    guest: 'My-Ngoc "Menop" Nguyen',
-    tag: 'AI & MSP'
-  },
-  {
-    videoId: 't1dKDjvntMU',
-    title: 'Why Most Companies Are NOT Ready for a Cyber Attack',
-    guest: 'Joshua Sorenson',
-    tag: 'Cybersecurity'
-  },
-  {
-    videoId: 'Or18vigVhhw',
-    title: 'DOGE Gutted His Government Contracts — Here\'s How He Survived',
-    guest: 'Dan Van Wagenen',
-    tag: 'Business'
-  },
-  {
-    videoId: 'VIBDYG1rBCo',
-    title: 'The Importance of SEO for Growing Your Business',
-    guest: 'Donny Zanger',
-    tag: 'Marketing'
-  },
-  {
-    videoId: '-fXfINmgUFc',
-    title: 'The MSP Growth Playbook: Speak Business, Not Tech',
-    guest: 'Peter Perez',
-    tag: 'Growth'
-  },
-  {
-    videoId: 'DHTfu0Wygkw',
-    title: 'From Zero Experience to Pen Tester — The Unorthodox Path Into Cybersecurity',
-    guest: 'Chris Bingham',
-    tag: 'Career'
-  },
-  {
-    videoId: 'gVdVPMASjJo',
-    title: '23 Years in the Air Force Taught Him Cyber — Now He\'s Protecting Small Businesses',
-    guest: 'Vince Romney',
-    tag: 'Cybersecurity'
-  }
-];
-
-// ── Build cards ──────────────────────────────────────────
-function esc(s) {
-  return s
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;');
-}
-
-function buildCard(ep) {
-  const href   = `https://youtu.be/${ep.videoId}`;
-  // hqdefault (480×360) is always available; sddefault/mqdefault as further fallback
-  const thumb  = ep.thumb
-    ? ep.thumb
-    : `https://i.ytimg.com/vi/${ep.videoId}/hqdefault.jpg`;
-  const thumbFallback = ep.thumb
-    ? ep.thumb
-    : `https://i.ytimg.com/vi/${ep.videoId}/mqdefault.jpg`;
-
-  return `
-<a href="${esc(href)}" target="_blank" rel="noopener" class="ep-card">
-  <div class="ep-thumb-box">
-    <img
-      class="ep-thumb-img"
-      src="${esc(thumb)}"
-      alt="${esc(ep.title)}"
-      loading="eager"
-      onerror="if(!this.dataset.tried){this.dataset.tried='1';this.src='${esc(thumbFallback)}'}else{this.style.display='none';this.nextElementSibling.style.display='flex'}"
-    >
-    <div class="ep-thumb-fallback" style="display:none">
-      <svg width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.4" viewBox="0 0 24 24" opacity="0.3">
-        <polygon points="5,3 19,12 5,21"/>
-      </svg>
-    </div>
-    <div class="ep-play">
-      <div class="ep-play-circle">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="#6A3DFF"><polygon points="5,3 19,12 5,21"/></svg>
+      <hr style="border:0;border-top:1px solid var(--line-dk)" />
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-7 text-sm" style="color:var(--muted-dk)">
+        <p>© <span id="year">2026</span> SalesSignalIQ. All rights reserved.</p>
+        <div class="flex gap-6">
+          <a class="footer-link" href="/privacy.html">Privacy</a>
+          <a class="footer-link" href="/terms.html">Terms</a>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="ep-body">
-    <span class="ep-tag">${esc(ep.tag)}</span>
-    <div class="ep-title">${esc(ep.title)}</div>
-    <div class="ep-guest">
-      <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-      </svg>
-      ${esc(ep.guest)}
-    </div>
-  </div>
-</a>`;
-}
+  </footer>
 
-document.getElementById('epGrid').innerHTML = EPISODES.map(buildCard).join('');
-</script>
-
-<!-- ── Beams Background animation ── -->
-<script>
-(function () {
-  const container = document.getElementById('beams-bg');
-  if (!container) return;
-
-  const canvas = document.createElement('canvas');
-  container.appendChild(canvas);
-  const ctx = canvas.getContext('2d');
-
-  const MINIMUM_BEAMS = 20;
-  const TOTAL_BEAMS   = Math.floor(MINIMUM_BEAMS * 1.5);
-
-  // Beam colours shifted toward the site's purple palette (hue 240-280)
-  function createBeam(w, h) {
-    const angle = -35 + Math.random() * 10;
-    return {
-      x:          Math.random() * w * 1.5 - w * 0.25,
-      y:          Math.random() * h * 1.5 - h * 0.25,
-      width:      30 + Math.random() * 60,
-      length:     h * 2.5,
-      angle:      angle,
-      speed:      0.6 + Math.random() * 1.2,
-      opacity:    0.12 + Math.random() * 0.16,
-      hue:        240 + Math.random() * 50,   // purple → violet range
-      pulse:      Math.random() * Math.PI * 2,
-      pulseSpeed: 0.02 + Math.random() * 0.03,
-    };
-  }
-
-  let beams = [];
-
-  function resize() {
-    const dpr = window.devicePixelRatio || 1;
-    canvas.width  = window.innerWidth  * dpr;
-    canvas.height = window.innerHeight * dpr;
-    canvas.style.width  = window.innerWidth  + 'px';
-    canvas.style.height = window.innerHeight + 'px';
-    ctx.scale(dpr, dpr);
-    beams = Array.from({ length: TOTAL_BEAMS }, () =>
-      createBeam(window.innerWidth, window.innerHeight)
-    );
-  }
-
-  function resetBeam(beam, index) {
-    const spacing = window.innerWidth / 3;
-    const col     = index % 3;
-    beam.y       = window.innerHeight + 100;
-    beam.x       = col * spacing + spacing / 2 + (Math.random() - 0.5) * spacing * 0.5;
-    beam.width   = 100 + Math.random() * 100;
-    beam.speed   = 0.5 + Math.random() * 0.4;
-    beam.hue     = 240 + (index * 50) / TOTAL_BEAMS;
-    beam.opacity = 0.2 + Math.random() * 0.1;
-  }
-
-  function drawBeam(beam) {
-    ctx.save();
-    ctx.translate(beam.x, beam.y);
-    ctx.rotate(beam.angle * Math.PI / 180);
-
-    const pulsingOpacity = beam.opacity * (0.8 + Math.sin(beam.pulse) * 0.2);
-
-    const grad = ctx.createLinearGradient(0, 0, 0, beam.length);
-    grad.addColorStop(0,   `hsla(${beam.hue}, 85%, 65%, 0)`);
-    grad.addColorStop(0.1, `hsla(${beam.hue}, 85%, 65%, ${pulsingOpacity * 0.5})`);
-    grad.addColorStop(0.4, `hsla(${beam.hue}, 85%, 65%, ${pulsingOpacity})`);
-    grad.addColorStop(0.6, `hsla(${beam.hue}, 85%, 65%, ${pulsingOpacity})`);
-    grad.addColorStop(0.9, `hsla(${beam.hue}, 85%, 65%, ${pulsingOpacity * 0.5})`);
-    grad.addColorStop(1,   `hsla(${beam.hue}, 85%, 65%, 0)`);
-
-    ctx.fillStyle = grad;
-    ctx.fillRect(-beam.width / 2, 0, beam.width, beam.length);
-    ctx.restore();
-  }
-
-  function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    beams.forEach((beam, i) => {
-      beam.y     -= beam.speed;
-      beam.pulse += beam.pulseSpeed;
-      if (beam.y + beam.length < -100) resetBeam(beam, i);
-      drawBeam(beam);
-    });
-
-    requestAnimationFrame(animate);
-  }
-
-  resize();
-  window.addEventListener('resize', resize);
-  animate();
-})();
-</script>
-
+  <script src="assets/site.js"></script>
 </body>
 </html>

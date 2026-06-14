@@ -501,6 +501,37 @@ section[id], [id].section { scroll-margin-top: 92px; }
   box-shadow: 0 1px 0 var(--line-soft), var(--shadow-sm);
   padding-block: 0.7rem;
 }
+/* Brand lockup: gradient chevron mark + live-text wordmark */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.brand-mark {
+  flex: none;
+  filter: drop-shadow(0 4px 10px rgba(79, 43, 217, 0.28));
+  transition: transform 0.4s var(--ease-spring);
+}
+.brand:hover .brand-mark { transform: rotate(-4deg) scale(1.05); }
+.brand-text {
+  font-family: "Clash Display", "General Sans", sans-serif;
+  font-weight: 600;
+  font-size: 1.3rem;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.brand-iq {
+  background: var(--grad-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--violet-700);
+}
+/* On the dark footer, render the wordmark in white */
+footer .brand-text { color: #fff; }
+
 .nav-link { position: relative; font-weight: 500; color: var(--ink-soft); transition: color 0.25s ease; }
 .nav-link::after {
   content: "";

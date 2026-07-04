@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Podcast — SalesSignalIQ</title>
+  <meta name="description" content="The SalesSignal Podcast — conversations with MSP founders, cybersecurity leaders, and B2B operators on sales, growth, and go-to-market." />
+  <link rel="canonical" href="https://salessignaliq.co/podcast.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="The SalesSignal Podcast — SalesSignalIQ" />
+  <meta property="og:description" content="Conversations with MSP founders, cybersecurity leaders, and B2B operators on sales, growth, and go-to-market." />
+  <meta property="og:url" content="https://salessignaliq.co/podcast.html" />
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+  <meta name="theme-color" content="#6d4aff" />
+  <link rel="stylesheet" href="assets/site.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{fontFamily:{display:['"Clash Display"',"sans-serif"],sans:['"General Sans"',"sans-serif"]}}}};</script>
+  <style>
+    .ep-thumb{position:relative;aspect-ratio:16/9;overflow:hidden;border-radius:14px;background:#0b0b14;cursor:pointer;display:block;width:100%;border:0;padding:0}
+    .ep-thumb img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease}
+    .ep-thumb:hover img{transform:scale(1.04)}
+    .ep-thumb .play-badge{position:absolute;inset:0;display:grid;place-items:center}
+    .ep-thumb .play-badge span{display:grid;place-items:center;width:58px;height:58px;border-radius:50%;background:rgba(109,74,255,.92);box-shadow:0 8px 30px rgba(109,74,255,.45);transition:transform .25s ease}
+    .ep-thumb:hover .play-badge span{transform:scale(1.1)}
+    .ep-thumb iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  </style>
+</head>
+<body>
+  <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:left-4 focus:top-4 focus:bg-white focus:px-4 focus:py-2 focus:rounded-lg">Skip to content</a>
+
+  <header class="site-nav">
+    <div class="container flex items-center justify-between gap-6">
+      <a href="/" class="flex items-center gap-2.5 shrink-0" aria-label="SalesSignalIQ home"><img src="assets/logo.png" alt="SalesSignalIQ" class="h-9 w-auto" width="160" height="40" /></a>
+      <nav class="hidden lg:flex items-center gap-9" aria-label="Primary">
+        <a href="/#services" class="nav-link">Services</a>
+        <a href="/#process" class="nav-link">Process</a>
+        <a href="/results.html" class="nav-link">Results</a>
+        <a href="/#faq" class="nav-link">FAQ</a>
+        <a href="/podcast.html" class="nav-link">Podcast</a>
+      </nav>
+      <div class="hidden lg:flex items-center gap-3">
+        <a href="https://calendly.com/contact-apexpipelinesystems/discovery-call-with-deangelo-clone" class="btn btn-ghost">Book a call</a>
+        <a href="/#quote" class="btn btn-primary" data-magnetic>Get a quote</a>
+      </div>
+      <button class="hamburger lg:hidden grid gap-[6px] p-2 -mr-2" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+  <div class="mobile-menu lg:hidden" id="mobile-menu">
+    <a href="/#services">Services</a><a href="/#process">Process</a><a href="/results.html">Results</a><a href="/#faq">FAQ</a><a href="/podcast.html">Podcast</a>
+    <div class="flex flex-col gap-3 mt-8"><a href="https://calendly.com/contact-apexpipelinesystems/discovery-call-with-deangelo-clone" class="btn btn-ghost">Book a call</a><a href="/#quote" class="btn btn-primary">Get a quote</a></div>
+  </div>
+
+  <main id="main">
+    <section class="section pt-36 lg:pt-44">
+      <div class="container">
+        <p class="eyebrow reveal">Podcast</p>
+        <h1 class="reveal font-display text-[clamp(2.4rem,5.5vw,4.2rem)] mt-5 max-w-3xl" style="--reveal-delay:80ms">The SalesSignal Podcast.</h1>
+        <p class="lede reveal mt-6 max-w-2xl" style="--reveal-delay:160ms">Conversations with MSP founders, cybersecurity leaders, and B2B operators on how they actually sell, scale, and survive.</p>
+        <div class="reveal mt-8" style="--reveal-delay:240ms">
+          <a href="https://www.youtube.com/@SalesSignalPodcast?sub_confirmation=1" target="_blank" rel="noopener" class="btn btn-primary" data-magnetic>Subscribe on YouTube</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section pt-0">
+      <div class="container">
+        <div id="episode-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+      </div>
+      <div class="container mt-14 text-center reveal">
+        <p class="text-sm mb-4" style="color:var(--muted)">New episodes every week on YouTube.</p>
+        <a href="https://www.youtube.com/@SalesSignalPodcast" target="_blank" rel="noopener" class="btn btn-ghost">View the full channel</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="band-dark pt-16 pb-10" style="background:var(--ink)">
+    <div class="container">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm" style="color:var(--muted-dk)">
+        <a href="/" class="flex items-center gap-2"><img src="assets/logo.png" alt="SalesSignalIQ" class="h-8 w-auto" style="filter:brightness(0) invert(1)" /></a>
+        <p>© <span id="year">2026</span> SalesSignalIQ. All rights reserved.</p>
+        <div class="flex gap-6"><a class="footer-link" href="/privacy.html">Privacy</a><a class="footer-link" href="/terms.html">Terms</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+  /* ══════════════════════════════════════════════════════
+     EPISODES — newest first.
+     To add a new episode, copy the top entry and change the
+     id (the part after watch?v= in the YouTube URL) + title.
+     ══════════════════════════════════════════════════════ */
+  const EPISODES = [
+    { id: "GDnV_A9y-Uc", title: "Your HR is Held Together With Duct Tape — Here's the Fix | Mindy Flanigan, Inspiring HR" },
+    { id: "Vwimrqun3kg", title: "32 Years Fixing Factory Data: The Manufacturing Problems Costing You Millions | Juan Soto, IT Impact" },
+    { id: "LZ0rQtw-F5M", title: "Why US Startups Are Quietly Hiring Their Engineers From Argentina | Gabriel Silver, Silver Dev" },
+    { id: "gnZQluTB4r8", title: "He Built and Sold 2 MSPs — Here's How to Actually Scale One | Rudy Ordez, DataWise Networks" },
+    { id: "c3QO5f1SSeA", title: "Your AI Agents Are a Security Disaster Waiting to Happen | Dr. Marcelo Peredo, Sapien 9" },
+    { id: "Qhdd3qJmVPY", title: "Why Relationships Beat KPIs in the MSP World | Ryan Kelsey, VP of BD at CenterGrid" },
+    { id: "RqdHn5dghdM", title: "Do Great Work and the Business Looks After Itself | Tom Fitzgerald" },
+    { id: "Ty5nQMLB2Sc", title: "Why Most MSP Founders Are the Real Problem in Their Business (And How to Fix It) | Alex Joy" },
+    { id: "6gbnyygQ8A8", title: "20+ Years in Cybersecurity Taught Him to Build Small Teams With Huge Output" },
+    { id: "k9j-NPNXHZs", title: "The MSP Sales Process Most Founders Get Completely Wrong | Brian Strong" },
+    { id: "JjX3A05Cb78", title: "How Michael Hughes Runs Cybersecurity Across Healthcare Facilities 5 Hours Apart" },
+    { id: "a6FX4uvh2v8", title: "How Justin Esgar Built an Apple-Only MSP, a 12-Year Conference, and 3 Acquisitions from Networking" },
+    { id: "t4_tUo1R79w", title: "How Acrivos Built a Healthcare MSP That Onboards a New Client Every Month" },
+    { id: "dXuahZHjSns", title: "The Man Behind McAfee's $200M MSSP Channel on Why Most AI Vendors Are Lying | Norman Currie" },
+    { id: "rYdjbS5wvxA", title: "This Cybersecurity CEO Breaks AI for a Living | Eric Vanderburg" },
+    { id: "IMwliTso7ko", title: "From Kansas to the Largest CPA MSP in North America | Randy Johnston" },
+    { id: "D5hQfIlW2GE", title: "Cyber Insurance Only Paid 44% of Claims Last Year — Now What? | James Oliverio" },
+    { id: "Bz8mJH_0M6M", title: "The PBM Scam: How 3 Companies Control 80% of Your Pharmacy" },
+    { id: "y0XqbssAke4", title: "25 Years in IT: What Most MSPs Are Getting Wrong | Jason Romer" },
+    { id: "QM6Y-PRzyY4", title: "How a Small Consulting Firm Lands Fortune 1000 Clients | Trevor Wragg" },
+    { id: "UibfIJba7vc", title: "Why Most MSPs Are Using AI Wrong | My-Ngoc \"Menop\" Nguyen" },
+    { id: "t1dKDjvntMU", title: "Why Most Companies Are NOT Ready for a Cyber Attack | Joshua Sorenson" },
+    { id: "Or18vigVhhw", title: "DOGE Gutted His Government Contracts — Here's How He Survived | Dan Van Wagenen" },
+    { id: "VIBDYG1rBCo", title: "The Importance of SEO for Growing Your Business | Donny Zanger" },
+    { id: "-fXfINmgUFc", title: "The MSP Growth Playbook: Speak Business, Not Tech | Peter Perez" },
+    { id: "DHTfu0Wygkw", title: "From Zero Experience to Pen Tester — The Unorthodox Path Into Cybersecurity | Chris Bingham" },
+    { id: "gVdVPMASjJo", title: "23 Years in the Air Force Taught Him Cyber — Now He's Protecting Small Businesses | Vince Romney" }
+  ];
+
+  const grid = document.getElementById('episode-grid');
+  EPISODES.forEach((ep, i) => {
+    const epNum = EPISODES.length - i;
+    const card = document.createElement('article');
+    card.className = 'card card-hover reveal p-4';
+    if (i % 3) card.style.setProperty('--reveal-delay', (i % 3) * 80 + 'ms');
+    card.innerHTML = `
+      <button class="ep-thumb" type="button" aria-label="Play: ${ep.title.replace(/"/g, '&quot;')}">
+        <img src="https://i.ytimg.com/vi/${ep.id}/hqdefault.jpg" alt="" loading="lazy" width="480" height="270" />
+        <span class="play-badge"><span><svg width="20" height="20" viewBox="0 0 24 24" fill="white" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span>
+      </button>
+      <div class="chip mt-4 mb-2">Episode ${epNum}</div>
+      <h2 class="font-display text-lg leading-snug">${ep.title}</h2>`;
+    card.querySelector('.ep-thumb').addEventListener('click', function () {
+      this.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${ep.id}?autoplay=1&rel=0" title="${ep.title.replace(/"/g, '&quot;')}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+      this.style.cursor = 'default';
+    }, { once: true });
+    grid.appendChild(card);
+  });
+  </script>
+  <script src="assets/site.js"></script>
+</body>
+</html>

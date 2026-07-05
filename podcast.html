@@ -99,31 +99,15 @@
     { id: "c3QO5f1SSeA", title: "Your AI Agents Are a Security Disaster Waiting to Happen | Dr. Marcelo Peredo, Sapien 9" },
     { id: "Qhdd3qJmVPY", title: "Why Relationships Beat KPIs in the MSP World | Ryan Kelsey, VP of BD at CenterGrid" },
     { id: "RqdHn5dghdM", title: "Do Great Work and the Business Looks After Itself | Tom Fitzgerald" },
-    { id: "Ty5nQMLB2Sc", title: "Why Most MSP Founders Are the Real Problem in Their Business (And How to Fix It) | Alex Joy" },
-    { id: "6gbnyygQ8A8", title: "20+ Years in Cybersecurity Taught Him to Build Small Teams With Huge Output" },
-    { id: "k9j-NPNXHZs", title: "The MSP Sales Process Most Founders Get Completely Wrong | Brian Strong" },
-    { id: "JjX3A05Cb78", title: "How Michael Hughes Runs Cybersecurity Across Healthcare Facilities 5 Hours Apart" },
-    { id: "a6FX4uvh2v8", title: "How Justin Esgar Built an Apple-Only MSP, a 12-Year Conference, and 3 Acquisitions from Networking" },
-    { id: "t4_tUo1R79w", title: "How Acrivos Built a Healthcare MSP That Onboards a New Client Every Month" },
-    { id: "dXuahZHjSns", title: "The Man Behind McAfee's $200M MSSP Channel on Why Most AI Vendors Are Lying | Norman Currie" },
-    { id: "rYdjbS5wvxA", title: "This Cybersecurity CEO Breaks AI for a Living | Eric Vanderburg" },
-    { id: "IMwliTso7ko", title: "From Kansas to the Largest CPA MSP in North America | Randy Johnston" },
-    { id: "D5hQfIlW2GE", title: "Cyber Insurance Only Paid 44% of Claims Last Year — Now What? | James Oliverio" },
-    { id: "Bz8mJH_0M6M", title: "The PBM Scam: How 3 Companies Control 80% of Your Pharmacy" },
-    { id: "y0XqbssAke4", title: "25 Years in IT: What Most MSPs Are Getting Wrong | Jason Romer" },
-    { id: "QM6Y-PRzyY4", title: "How a Small Consulting Firm Lands Fortune 1000 Clients | Trevor Wragg" },
-    { id: "UibfIJba7vc", title: "Why Most MSPs Are Using AI Wrong | My-Ngoc \"Menop\" Nguyen" },
-    { id: "t1dKDjvntMU", title: "Why Most Companies Are NOT Ready for a Cyber Attack | Joshua Sorenson" },
-    { id: "Or18vigVhhw", title: "DOGE Gutted His Government Contracts — Here's How He Survived | Dan Van Wagenen" },
-    { id: "VIBDYG1rBCo", title: "The Importance of SEO for Growing Your Business | Donny Zanger" },
-    { id: "-fXfINmgUFc", title: "The MSP Growth Playbook: Speak Business, Not Tech | Peter Perez" },
-    { id: "DHTfu0Wygkw", title: "From Zero Experience to Pen Tester — The Unorthodox Path Into Cybersecurity | Chris Bingham" },
-    { id: "gVdVPMASjJo", title: "23 Years in the Air Force Taught Him Cyber — Now He's Protecting Small Businesses | Vince Romney" }
+    { id: "Ty5nQMLB2Sc", title: "Why Most MSP Founders Are the Real Problem in Their Business (And How to Fix It) | Alex Joy" }
   ];
+  /* Oldest episode shown on this page — keeps the "Episode N" labels
+     matching the real episode numbers on the channel. */
+  const OLDEST_EPISODE = 20;
 
   const grid = document.getElementById('episode-grid');
   EPISODES.forEach((ep, i) => {
-    const epNum = EPISODES.length - i;
+    const epNum = OLDEST_EPISODE + (EPISODES.length - 1 - i);
     const card = document.createElement('article');
     card.className = 'card card-hover reveal p-4';
     if (i % 3) card.style.setProperty('--reveal-delay', (i % 3) * 80 + 'ms');
